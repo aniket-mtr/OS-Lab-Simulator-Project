@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hole Allocation Simulator</title>
+
+  <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .heading {
+      text-align: center;
+      background-color: #dff5ff;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 2rem;
+    }
+
+    .processblock {
+      background-color: #089500;
+      color: #fff;
+      text-align: center;
+      place-items: center;
+      place-content: center;
+      justify-items: center;
+      justify-content: center;
+      border-radius: 0.2rem;
+      height: 50px;
+      margin-left: 0px;
+      position: relative;
+    }
+
+    .holeblock {
+      background-color: #427D9D;
+      color: #fff;
+      text-align: center;
+      place-items: center;
+      place-content: center;
+      justify-items: center;
+      justify-content: center;
+      border-radius: 0.2rem;
+      height: 50px;
+      margin-left: 0px;
+      position: relative;
+    }
+
+    .blocks-container {
+      display: flex;
+      min-width: 100%;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .process {
+      position: absolute;
+      height: 100%;
+      background-color: #007bff;
+      /* Blue */
+      color: #fff;
+      /* White */
+    }
+
+    .process-info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse " id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="Contiguous Memory Allocation.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="heading">
+      Allocation of Memory Holes via Best-Fit, Worst-Fit, and First-Fit
+    </h1>
+
+    <div id="inputFormMemory">
+      <div class="form-group mt-4">
+        <label for="totalMemorySize">Enter size of Total Memory:</label>
+        <input type="number" class="form-control" id="totalMemorySize" />
+      </div>
+      <button class="btn btn-primary mt-2" onclick="initiateMemory()">
+        Initialize Memory
+      </button>
+    </div>
+
+    <div id="inputFormProcess" style="visibility: hidden">
+      <div class="form-group mt-4">
+        <label for="totalMemorySize">Enter Size of Process:</label>
+        <input type="number" class="form-control" id="processSize" />
+      </div>
+      <button class="btn btn-primary mt-2" onclick="allocateProcess1()">
+        First-Fit
+      </button>
+      <button class="btn btn-primary mt-2" onclick="allocateProcess2()">
+        Worst-Fit
+      </button>
+      <button class="btn btn-primary mt-2" onclick="allocateProcess3()">
+        Best-Fit
+      </button>
+      <button class="btn btn-danger mt-2" onclick="deleteProcesses()">
+        Delete Selected
+      </button>
+    </div>
+
+    <!-- The memory blocks appear here -->
+    <div id="memoryBlockContainer" class="blocks-container" style="display: none;">
+      <!-- They come here -->
+      <!-- <span class="block" style="min-width: 20%">20</span>
+        <span class="block" style="min-width: 10%">10</span> -->
+    </div>
+
+    <div class="mt-4" id="processTable" style="visibility: hidden">
+      <h3>Process Table</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Block Type</th>
+            <th>Process ID</th>
+            <th>Size</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody id="processTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let totalMemorySize;
+    let externalFragmentation;
+    let processId = 1;
+    let contspace = 0;
+
+    function initiateMemory() {
+      totalMemorySize = parseInt(
+        document.getElementById("totalMemorySize").value
+      );
+      externalFragmentation = totalMemorySize;
+
+      if (isNaN(totalMemorySize) || totalMemorySize <= 0) {
+        alert("Please enter a valid total memory size.");
+        return;
+      }
+
+      document.getElementById("inputFormMemory").style.display = "none";
+      document.getElementById("inputFormProcess").style.visibility =
+        "visible";
+      document.getElementById("processTable").style.visibility = "visible";
+      document.getElementById("memoryBlockContainer").style.display = "flex";
+      const tableBody = document.getElementById("processTableBody");
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+                  <td>Hole</td>
+                  <td>-</td>
+                  <td>${totalMemorySize}</td>
+              `;
+      tableBody.appendChild(newRow);
+      const newBlock = document.createElement("span");
+      newBlock.className = "holeblock";
+      newBlock.style.minWidth = `${100 - contspace}%`;
+      newBlock.innerHTML = totalMemorySize;
+      const blockContainer = document.getElementById("memoryBlockContainer");
+      blockContainer.appendChild(newBlock);
+    }
+
+
+
+    function allocateProcess1() {
+      const processSize = parseInt(
+        document.getElementById("processSize").value
+      );
+
+      if (isNaN(processSize) || processSize <= 0) {
+        alert("Please enter a valid process size.");
+        return;
+      }
+      const holenum = findHole1(processSize)
+      if (!holenum) {
+        alert("Unable to allocate this process.\nExternalFragmentation: " + parseInt(externalFragmentation));
+        return;
+      }
+      externalFragmentation -= processSize;
+    }
+
+    function allocateProcess2() {
+      const processSize = parseInt(
+        document.getElementById("processSize").value
+      );
+
+      if (isNaN(processSize) || processSize <= 0) {
+        alert("Please enter a valid process size.");
+        return;
+      }
+      const holenum = findHole2(processSize)
+      if (!holenum) {
+        alert("Unable to allocate this process.\nExternalFragmentation: " + parseInt(externalFragmentation));
+        return;
+      }
+
+      externalFragmentation -= processSize;
+
+    }
+    function allocateProcess3() {
+      const processSize = parseInt(
+        document.getElementById("processSize").value
+      );
+
+      if (isNaN(processSize) || processSize <= 0) {
+        alert("Please enter a valid process size.");
+        return;
+      }
+      const holenum = findHole3(processSize)
+      if (!holenum) {
+        alert("Unable to allocate this process.\nExternalFragmentation: " + parseInt(externalFragmentation));
+        return;
+      }
+
+      externalFragmentation -= processSize;
+    }
+
+    function findHole1(processSize) {
+      const tableRows = document.querySelectorAll("#processTableBody tr");
+
+      for (let i = 0; i < tableRows.length; i++) {
+        const row = tableRows[i];
+        const columns = row.querySelectorAll("td");
+        const blockType = columns[0].innerText;
+        let size = parseInt(columns[2].innerText);
+
+        if (blockType === "Hole" && size >= processSize) {
+          // Modify the existing "Hole" row to reflect the new size after allocation
+          size -= processSize;
+          columns[2].innerText = size;
+
+          // Update the block size in the visual representation
+          if (size == 0) {
+
+            updateProcessTable(processId, processSize, i + 1);
+            processId++;
+            addNewMemoryBlock(processSize, totalMemorySize, i + 1);
+            row.remove();
+            const blockContainer = document.getElementById("memoryBlockContainer");
+            blockContainer.children[i].remove();
+            return 1;
+          }
+          else {
+            const blockContainer = document.getElementById("memoryBlockContainer");
+            const holeBlock = blockContainer.children[i];
+            holeBlock.style.minWidth = `${(size / totalMemorySize) * 100 - contspace}%`;
+            holeBlock.innerHTML = size;
+          }
+          updateProcessTable(processId, processSize, i + 1);
+          processId++;
+          addNewMemoryBlock(processSize, totalMemorySize, i + 1);
+          return i + 1; // Return row number (1-indexed)
+        }
+      }
+
+      return 0; // Return 0 if no hole found
+    }
+
+    function findHole2(processSize) {
+      const tableRows = document.querySelectorAll("#processTableBody tr");
+      let max = 0, index = 0;
+      for (let i = 0; i < tableRows.length; i++) {
+        const row = tableRows[i];
+        const columns = row.querySelectorAll("td");
+        const blockType = columns[0].innerText;
+        let size = parseInt(columns[2].innerText);
+        if (blockType === "Hole" && size >= max) {
+          max = size;
+          index = i + 1;
+        }
+      }
+      
+      if(index == 0)
+        return index;
+      // Modify the existing "Hole" row to reflect the new size after allocation
+      const row = tableRows[index - 1];
+      const columns = row.querySelectorAll("td");
+      let size = parseInt(columns[2].innerText);
+      size -= processSize;
+
+      // Update the block size in the visual representation
+      if (size >= 0) {
+        if (size == 0) {
+          row.remove();
+          const blockContainer = document.getElementById("memoryBlockContainer");
+          blockContainer.children[index - 1].remove();
+          updateProcessTable(processId, processSize, index - 1);
+          processId++;
+          addNewMemoryBlock(processSize, totalMemorySize, index - 1);
+        }
+        else {
+          const blockContainer = document.getElementById("memoryBlockContainer");
+          const holeBlock = blockContainer.children[index - 1];
+          holeBlock.style.minWidth = `${(size / totalMemorySize) * 100 - contspace}%`;
+          holeBlock.innerHTML = size;
+          columns[2].innerText = size;
+          updateProcessTable(processId, processSize, index);
+          processId++;
+          addNewMemoryBlock(processSize, totalMemorySize, index);
+        }
+        return index;
+      }
+      else
+        return 0;
+
+    }
+
+    function findHole3(processSize) {
+      const tableRows = document.querySelectorAll("#processTableBody tr");
+      let min = totalMemorySize + 1;
+      let index = 0;
+      for (let i = 0; i < tableRows.length; i++) {
+        const row = tableRows[i];
+        const columns = row.querySelectorAll("td");
+        const blockType = columns[0].innerText;
+        let size = parseInt(columns[2].innerText);
+        if (blockType === "Hole" && size < min && size >= processSize) {
+          min = size;
+          index = i + 1;
+        }
+      }
+      if(index == 0)
+        return index;
+      // Modify the existing "Hole" row to reflect the new size after allocation
+      const row = tableRows[index - 1];
+      const columns = row.querySelectorAll("td");
+      let size = parseInt(columns[2].innerText);
+      size -= processSize;
+
+      // Update the block size in the visual representation
+      if (size >= 0) {
+        if (size == 0) {
+          row.remove();
+          const blockContainer = document.getElementById("memoryBlockContainer");
+          blockContainer.children[index - 1].remove();
+          updateProcessTable(processId, processSize, index - 1);
+          processId++;
+          addNewMemoryBlock(processSize, totalMemorySize, index - 1);
+        }
+        else {
+          const blockContainer = document.getElementById("memoryBlockContainer");
+          const holeBlock = blockContainer.children[index - 1];
+          holeBlock.style.minWidth = `${(size / totalMemorySize) * 100 - contspace}%`;
+          holeBlock.innerHTML = size;
+          columns[2].innerText = size;
+          updateProcessTable(processId, processSize, index);
+          processId++;
+          addNewMemoryBlock(processSize, totalMemorySize, index);
+        }
+      }
+      return index;
+    }
+
+    function addNewMemoryBlock(processSize, totalMemorySize, index) {
+      const blockContainer = document.getElementById("memoryBlockContainer");
+
+      // Create a new block element
+      const newBlock = document.createElement("span");
+      newBlock.className = "processblock";
+      newBlock.style.minWidth = `${(processSize / totalMemorySize) * 100 - contspace}%`;
+      newBlock.innerHTML = "P" + (processId - 1);
+
+      if (index === 0) {
+        // If index is 0, insert at the beginning
+        blockContainer.prepend(newBlock);
+      } else if (index >= blockContainer.children.length) {
+        // If index is greater than or equal to the length, insert at the end
+        blockContainer.appendChild(newBlock);
+      } else {
+        // Otherwise, insert at the specified index
+        const referenceNode = blockContainer.children[index - 1];
+        blockContainer.insertBefore(newBlock, referenceNode.nextSibling);
+      }
+    }
+
+    function updateProcessTable(processId, size, index) {
+      const tableBody = document.getElementById("processTableBody");
+      const newRow = tableBody.insertRow(index);
+      newRow.innerHTML = `
+                  <td>Process</td>
+                  <td>${processId}</td>
+                  <td>${size}</td>
+                  <td><input type="checkbox" class="row-checkbox"></td>
+              `;
+    }
+
+    function deleteProcesses() {
+      const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+
+      checkboxes.forEach((checkbox) => {
+        const row = checkbox.closest('tr');
+        const index = row.rowIndex;
+        const blockContainer = document.getElementById('memoryBlockContainer');
+        const size = parseInt(row.cells[2].innerText);
+        const type = updateProcessTable2(size, index);
+        if (type == 0) {
+          addHoleBlock1(size, index);
+        }
+        else if (type == 1) {
+          addHoleBlock2(size, index);
+        }
+        else if (type == 2) {
+          addHoleBlock3(size, index);
+        }
+        else if (type == 3) {
+          addHoleBlock4(size, index);
+        }
+        if (type != 3) {
+          const processBlock = blockContainer.children[index - 1];
+          processBlock.remove();
+        }
+        else {
+          const processBlock = blockContainer.children[index - 1];
+          processBlock.remove();
+        }
+        externalFragmentation += size;
+        row.remove();
+      });
+    }
+
+    function updateProcessTable2(size, index) {
+      const tableRows = document.querySelectorAll("#processTableBody tr");
+      const numberOfRows = tableRows.length;
+      if (index == 1) {
+        const nextRow = tableRows[index];
+        const nextColumns = nextRow.querySelectorAll("td");
+        if (nextColumns[0].innerText == "Hole") {
+          nextColumns[2].innerText = (parseInt(size) + parseInt(nextColumns[2].innerText));
+          return 2;
+        }
+        else {
+          const tableBody = document.getElementById("processTableBody");
+          const newRow = tableBody.insertRow(index);
+          newRow.innerHTML = `
+                  <td>Hole</td>
+                  <td>-</td>
+                  <td>${size}</td>
+              `;
+          return 0;
+        }
+      }
+      else if (index == numberOfRows) {
+        const prevRow = tableRows[index - 2];
+        const prevColumns = prevRow.querySelectorAll("td");
+        if (prevColumns[0].innerText == "Hole") {
+          prevColumns[2].innerText = (parseInt(size) + parseInt(prevColumns[2].innerText));
+          return 1;
+        }
+        else {
+          const tableBody = document.getElementById("processTableBody");
+          const newRow = tableBody.insertRow(index);
+          newRow.innerHTML = `
+                  <td>Hole</td>
+                  <td>-</td>
+                  <td>${size}</td>
+              `;
+          return 0;
+        }
+      }
+      else {
+        const prevRow = tableRows[index - 2];
+        const prevColumns = prevRow.querySelectorAll("td");
+        const nextRow = tableRows[index];
+        const nextColumns = nextRow.querySelectorAll("td");
+        if (nextColumns[0].innerText == "Hole" && prevColumns[0].innerText != "Hole") {
+          nextColumns[2].innerText = (parseInt(size) + parseInt(nextColumns[2].innerText));
+          return 2;
+        }
+        else if (nextColumns[0].innerText != "Hole" && prevColumns[0].innerText == "Hole") {
+          prevColumns[2].innerText = (parseInt(size) + parseInt(prevColumns[2].innerText));
+          return 1;
+        }
+        else if (nextColumns[0].innerText == "Hole" && prevColumns[0].innerText == "Hole") {
+          prevColumns[2].innerText = (parseInt(size) + parseInt(prevColumns[2].innerText)) + parseInt(prevColumns[2].innerText);
+          nextRow.remove();
+          return 3;
+        }
+        else {
+          const tableBody = document.getElementById("processTableBody");
+          const newRow = tableBody.insertRow(index);
+          newRow.innerHTML = `
+                  <td>Hole</td>
+                  <td>-</td>
+                  <td>${size}</td>
+              `;
+          return 0;
+        }
+      }
+      return 0;
+    }
+
+    function addHoleBlock1(holeSize, index) {
+      const newBlock = document.createElement("span");
+      newBlock.className = "holeblock";
+      newBlock.style.minWidth = `${(holeSize / totalMemorySize) * 100 - contspace}%`;
+      newBlock.innerHTML = holeSize
+      const blockContainer = document.getElementById("memoryBlockContainer");
+      const referenceNode = blockContainer.children[index - 1];
+      blockContainer.insertBefore(newBlock, referenceNode.nextSibling);
+    }
+
+    function addHoleBlock2(holeSize, index) {
+      const blockContainer = document.getElementById("memoryBlockContainer");
+      const holeBlock = blockContainer.children[index - 2];
+      let size = holeBlock.innerText;
+      size = parseInt(size) + parseInt(holeSize);
+      holeBlock.style.minWidth = `${(parseInt(size) / totalMemorySize) * 100 - contspace}%`;
+      holeBlock.innerHTML = size;
+    }
+    function addHoleBlock3(holeSize, index) {
+      const blockContainer = document.getElementById("memoryBlockContainer");
+      const holeBlock = blockContainer.children[index];
+      let size = holeBlock.innerText;
+      size = parseInt(size) + parseInt(holeSize);
+      holeBlock.style.minWidth = `${(parseInt(size) / totalMemorySize) * 100 - contspace}%`;
+      holeBlock.innerHTML = size;
+    }
+    function addHoleBlock4(holeSize, index) {
+      const blockContainer = document.getElementById("memoryBlockContainer");
+      const holeBlock1 = blockContainer.children[index - 2];
+      const holeBlock2 = blockContainer.children[index];
+      let size1 = holeBlock1.innerText;
+      let size2 = holeBlock2.innerText;
+      let size = parseInt(size1) + parseInt(holeSize) + parseInt(size2);
+      holeBlock1.style.minWidth = `${(parseInt(size) / totalMemorySize) * 100 - contspace}%`;
+      holeBlock1.innerHTML = size;
+      holeBlock2.remove();
+    }
+
+    function resetSimulation() {
+      totalMemorySize = 0;
+      processId = 1;
+
+      document.getElementById("memoryContainer").innerHTML = "";
+      document.getElementById("processTableBody").innerHTML = "";
+      document.getElementById("totalMemorySize").value = "";
+
+      document.getElementById("inputForm").style.display = "block";
+      document.getElementById("memoryBlock").style.display = "none";
+    }
+
+    function initiateSimulation() {
+      totalMemorySize = parseInt(
+        document.getElementById("totalMemorySize").value
+      );
+
+      if (isNaN(totalMemorySize) || totalMemorySize <= 0) {
+        alert("Please enter a valid total memory size.");
+        return;
+      }
+
+      document.getElementById("inputForm").style.display = "none";
+      document.getElementById("memoryBlock").style.display = "block";
+    }
+  </script>
+</body>
+
+</html>

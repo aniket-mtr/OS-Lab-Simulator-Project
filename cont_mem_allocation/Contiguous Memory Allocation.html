@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Allocation Simulators</title>
+
+  <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .container {
+      margin-top: 50px;
+    }
+
+    .simulator-box {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .simulator-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .simulator-description {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="text-center mb-5">Contiguous Memory Allocation</h1>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="simulator-box">
+          <h2 class="simulator-title">
+            Overview
+          </h2>
+          <p class="simulator-description">
+            Contiguous Memory Allocation refers to allocation of main memory to processes
+            in a way that all of the process is contiguously one after the other for each process.
+            In this scheme, the memory gets divided into holes which can be assigned to each processes
+            ass needed, which in turn reduces the size of the hole. Holes form in memory in two ways:
+            when memory is initially empty and when a process is deleted. The second kind might find themselves
+            becoming part of another hole or holes adjacent to the process in memory during its running time.
+            Our specific implementation assigns empty memory to processes from the end of the hole. There are 3
+            algorithms to consider when
+          </p>
+          <h2 class="simulator-title">
+            Hole Allocation Algorithms
+          </h2>
+          <p class="simulator-description">
+            There are 3 main ways to allocate holes present in memory at any given time:
+          </p>
+          <p class="simulator-description">
+            1. First-Fit: This algorithm goes through the holes in memory sequentially and allocates the process to the
+            first hole big enough to accomadate it.
+          </p>
+          <p class="simulator-description">
+            2. Worst-Fit: This algorithm goes through all the holes in memory sequentially and allocates the process to
+            largest hole present at the time.
+          </p>
+          <p class="simulator-description">
+            3. Best-Fit: This algorithm goes through all the holes in memory sequentially and allocates the process to
+            the best fitting hole: that is, the hole that can accomodate process and is the closest to its size in
+            totalMemorySize.
+          </p>
+          <h2 class="simulator-title">
+            Extra Implementation
+          </h2>
+          <p class="simulator-description">
+            The Main thing added in this implementation compared to the lab is the possibility of completely variable
+            hole sizes.
+            The implementation done during the lab divided processes into blocks in a kind of pseudo-MFT where a process
+            could only
+            be allocated to a single block. Essentially, the maximum number of holes in the memory would be capped at
+            number of blocks.
+            This is not a completely satisfactory implementation of true MVT, and thus we have implemented dynamically
+            changing holes
+            without the need of any fixed blocks.
+            Other than that, we also keep track of external fragmentation, which is shown in the alert notification that
+            appears whenever a given process cannot be added to memory
+          </p>
+          <a href="./Hole Allocation Algorithm.html" class="btn btn-primary">Go to Allocation</a>
+          <p class="simulator-description">
+            Note: Processes are green and holes are blue.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

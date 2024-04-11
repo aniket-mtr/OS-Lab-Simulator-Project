@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inter-Process Communication</title>
+
+    <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .container {
+        margin-top: 50px;
+      }
+      .simulator-box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .simulator-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .simulator-description {
+        font-size: 16px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto me-4">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="text-center mb-5">Inter-Process Communication through Shared Memory</h1>
+        <p>Inter-Process Communication (IPC) allows co-operating processes to share data and synchronize their operations. There are two major ways to
+            implement IPC.  They are Shared Memory and Message Passing.
+        <br>
+        <br>
+            In IPC through Shared Memory, a memory segment is shared by many processes for communication. This shared memory segment is attached to the 
+            address space of the processes, who want to communicate using it.  Here, we have simulated two process writing to (the writer) and reading
+            from (the reader) the shared memory segment.
+        </p>
+        <br>
+        <br>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              Shared Memory with a Bounded Buffer
+            </h2>
+            <p class="simulator-description">
+              In this form of IPC through Shared Memory, we have a limit 
+              on the buffer size, or the size of the shared memory segment. 
+            </p>
+            <a href="./BoundedBufferIPC.html" class="btn btn-primary">Simulate Bounded Buffer IPC through Shared Memory</a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              Shared Memory with an Unbounded Buffer
+            </h2>
+            <p class="simulator-description">
+             In this form of IPC through Shared Memory, there is no limit on
+             the buffer (or shared memory segment) size. 
+            </p>
+            <a href="./UnboundedBufferIPC.html" class="btn btn-primary">Simulate Unbounded Buffer IPC through Shared Memory</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

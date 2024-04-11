@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Replacement Algorithms</title>
+
+    <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .container {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .simulator-box {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .simulator-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .simulator-description {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .button {
+            margin-top: 20px;
+        }
+
+        input {
+            width: 400px;
+        }
+
+        #inputForm {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="pageReplacementAlgos.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="text-center mb-5">FIFO Page Replacement Algorithm</h1>
+        <div id="inputForm" style="text-align: center;">
+            <div class="form-group mt-4">
+                <label for="input_string">Enter stream of pages:</label>
+                <input type="text" class="form-control" id="input_string" required />
+            </div>
+            <div class="form-group mt-2">
+                <label for="frame_size">Enter frame size:</label>
+                <input id="frame_size" class="form-control" placeholder="" type="number" name="frame" min="1"
+                    required />
+            </div>
+            <div class="button">
+                <input id="visualize-button" type="button" onclick="showDiv(); visualize(); disableButton();"
+                    class="btn btn-outline-success" value="VISUALIZE">
+            </div>
+            <div class="button">
+                <input id="reset-button" type="button" onclick="reset(); enableButton();"
+                    class="btn btn-outline-danger" value="RESET">
+            </div>
+        </div>
+        <div class="second" id="SUM" style="display: none;">
+            <div class="heading">
+                <h1 class="text-center mb-5">Visualization</h1>
+            </div>
+            <div class="data">
+                <table id="tbl" class="table table-bordered">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary card border border-dark align-items-center m-4">
+                <p id="page_miss"></p>
+                <p id="page_hits"></p>
+                <p id="miss_rate"></p>
+                <p id="hit_rate"></p>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var numberOfFrames, dropDown, inputString, numberOfPages, pageFaults = 0, pageHits = 0, count = 0, missRate, hitRate;
+    var arr = new Array();
+    function visualize() {
+        inputString = document.getElementById("input_string").value;
+        if (inputString == "") {
+            alert("Please Enter all fields");
+            reset();
+        }
+        arr = inputString.split(' ').map(Number);
+        numberOfPages = arr.length;
+        numberOfFrames = parseInt(document.getElementById("frame_size").value);
+        if (isNaN(numberOfFrames)) {
+            alert("Please Enter all fields");
+            reset();
+        }
+
+        if (numberOfFrames == 0) {
+            alert("Please choose Number Of Frames greater than 1");
+            reset();
+        }
+
+        var table = document.getElementById("tbl");
+        var row = table.insertRow(0);
+        for (let j = 0; j <= (numberOfFrames + 1); j++) {
+            var cell = row.insertCell(j);
+
+            if (j == 0) {
+                cell.innerHTML = "<b>Page Sequence</b>";
+            }
+            else if (j == (numberOfFrames + 1)) {
+                cell.innerHTML = "<b>Page Hit/Miss</b>";
+            }
+            else {
+                cell.innerHTML = `<b>Frame ${j}</b>`;
+            }
+        }
+
+        var temp = new Array();
+        for (let o = 0; o < numberOfFrames; o++) {
+            temp[o] = -1;
+        }
+
+        for (let m = 0; m < numberOfPages; m++) {
+            let s = 0, k = 0, p;
+
+            for (let n = 0; n < numberOfFrames; n++) {
+                if (arr[m] == temp[n]) {
+                    s++;
+                    pageHits++;
+                    pageFaults--;
+                }
+            }
+            pageFaults++;
+
+            if ((pageFaults < numberOfFrames) && (s == 0)) {
+                for (p = 0; p < numberOfFrames; p++) {
+                    if (temp[p] == -1)
+                        break;
+                }
+                temp[p] = arr[m];
+            }
+            else if (s == 0) {
+                temp[(pageFaults - 1) % numberOfFrames] = arr[m];
+            }
+
+            row = table.insertRow((count) + 1);
+            cell = row.insertCell((k++));
+            cell.innerHTML = arr[m];
+            count++;
+
+            for (let n = 0; n < numberOfFrames; n++) {
+                if (temp[n] != -1) {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = temp[n];
+                }
+                else {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = " - ";
+                }
+
+            }
+            if (s == 0) {
+                cell = row.insertCell((k++));
+                cell.innerHTML = "Miss";
+                cell.style.backgroundColor = "rgb(255, 0, 0)";
+            }
+            else {
+                cell = row.insertCell((k++));
+                cell.innerHTML = "Hit";
+                cell.style.backgroundColor = "rgb(0, 255, 0)";
+            }
+
+        }
+
+        hitRate = (pageHits / numberOfPages) * 100;
+        missRate = (pageFaults / numberOfPages) * 100;
+
+        document.getElementById("page_miss").innerHTML = "Total Number Of Page Faults : " + `<b>${pageFaults}</b>`;
+        document.getElementById("page_hits").innerHTML = "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
+        document.getElementById("miss_rate").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
+        document.getElementById("hit_rate").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
+    }
+    function reset() {
+        location.reload();
+    }
+    function disableButton() {
+        document.getElementById("visualise-button").disabled = true;
+    }
+    function enableButton() {
+        document.getElementById("visualise-button").disabled = false;
+    }
+    function showDiv() {
+        document.getElementById('SUM').style.display = "block";
+    }
+    function redirect() {
+        window.location.href = "page_replacement_comparison.html";
+    }
+</script>
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Allocation Simulators</title>
+
+    <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .container {
+        margin-top: 50px;
+      }
+      .simulator-box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .simulator-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .simulator-description {
+        font-size: 16px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto me-4">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="text-center mb-5">MVT and MFT</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              MFT(Multiprogramming with Fixed number of Tasks)
+            </h2>
+            <p class="simulator-description">
+              In this scheme, the primary
+              memory is segmented into partitions of predetermined sizes, each
+              designated for a specific task or program. These partitions remain
+              fixed and are allocated to programs prior to execution, remaining
+              unchanged throughout runtime. Regardless of a program's size, it
+              is assigned a predetermined partition. MFT ensures program
+              isolation within their designated partitions, enhancing program
+              security. Additionally, it mitigates external fragmentation as
+              partition sizes remain constant.
+            </p>
+            <a href="./mft.html" class="btn btn-primary">Simulate MFT</a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              MVT(Multiprogramming with Variable number of Tasks)
+            </h2>
+            <p class="simulator-description">
+              In this scheme, the primary memory is segmented
+              into partitions of varying sizes to cater to the diverse needs of
+              programs or tasks.Upon the arrival of a new program,
+              the operating system searches for an adequately sized partition to
+              accommodate it. Once suitable partition is identified,the
+              program is loaded into it. MVT enables effective memory
+              utilization by dynamically adjusting partition sizes to
+              accommodate incoming programs' needs. However, this approach may
+              result in external fragmentation, as free memory blocks might be
+              dispersed across the memory space.
+            </p>
+            <a href="./mvt.html" class="btn btn-primary">Simulate MVT</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

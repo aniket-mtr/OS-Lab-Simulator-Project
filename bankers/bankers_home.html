@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Banker's Algorithm</title>
+  	<!-- javascript link-->
+  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+  	<!--font awesome link -->
+  	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      color: #000000;
+    }
+
+    h1 {
+      text-align: center;  
+      background-color: #dff5ff;
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
+    #header{
+      background-color: blue;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .success {
+      color: #FCBA28;
+      font-weight:400;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .input-container {
+      margin-bottom: 10px;
+      margin-left: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="number"], select {
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      font-size: x-large;
+    }
+    .button {
+        /* background-color: #FCBA28;
+        color: #0f0d0e;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        transition-duration: 0.5s;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 550; */
+        background-color: #0d6efd;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+      }
+    .button1 {
+        /* background-color: #0f0d0e; 
+        color: #FCBA28; 
+        border-radius: 5px;
+        border: 2px solid #FCBA28; */
+        background-color: #0d6efd;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+      }
+    
+    /* .button1:hover {
+       background-color: #FCBA28;
+       color: #0f0d0e;
+    } */
+    nav {
+      background-color: #0d6efd;
+      height: 90px;
+      display:flex;
+      justify-content:space-between;
+      background: rgba(10, 4, 4, 0);
+      position:relative;
+    }
+    .logo {
+      height: 100px;
+      border-radius: 12px;
+      margin: 15px;
+      margin-left: 0;
+      padding: 18px 10px 2px 10px;
+      background: transparent; /* Changed to transparent */
+      color: white; /* Changed to white */
+      text-align: center;
+      font: 20px 'Outfit', sans-serif;
+      justify-content: center;
+      font-weight: bolder;
+      cursor: pointer;
+      font-weight: bold;
+}
+
+    /* .logo:hover {
+      color: #FCBA28;
+    } */
+      
+    ul {
+      list-style: none;
+      margin-right: 4%;
+      padding: 0;
+      display:flex;
+      justify-content:right;
+      align-items: center;
+      height: 100%;
+    }
+    
+    li {
+      margin: 0 20px;
+    
+    }
+    
+    a {
+      color: #FCBA28;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight:bold;
+      text-transform: uppercase;
+    }
+    
+    
+    .input-container input[type="text"] {
+        border: 1px solid black;
+        width: 500px;
+    }
+
+    *{
+      border: 0;
+      margin: 0;
+  }
+    
+    /* dropdown*/
+    
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      min-width: 135px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      background: rgba(2, 2, 0, 0.45);
+      border-radius: 5px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10.3px);
+      -webkit-backdrop-filter: blur(10.3px);
+      
+    }
+    
+    .dropdown-content a {
+      color: #FCBA28;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      border: none;
+      cursor: pointer;
+      transition-duration: 0.25s;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 550;
+      font-size: small;
+    
+    }
+    
+    .dropdown-content a:hover {
+      background-color:#FCBA28;
+      color: #0f0d0e;
+      border-radius: 5px;
+    }
+    
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    #navbar{
+      text-align: center;
+      background-color: #0d6efd;
+    }
+
+    .bankers-info {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      font-size: 18px;
+    }
+    .bankers-info p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .add-remove-simulate
+    {
+      border: 1px solid black;
+      background-color: #dcfc28;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bolder;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <a class="logo" href="../index.html"> <b>OS SIMULATOR </b></a>
+    <ul>
+        <li><button onclick="location.href = '../index.html';" class="button button1">Home</button></li>
+        <!-- <li class="dropdown"><button class="button button1 dropbtn">Algorithms</button>
+          <div class="dropdown-content">
+              <a href="../process_scheduling/process.html">Process Scheduling</a>
+              <a href="../process_sync\home.html">Process Synchronization</a>
+              <a href="../Bankers/bankers.html">Bankers Algorithm</a>
+              <a href="../mft_mvt/Fit.html">Fit Algorithms</a>
+              <a href="../Page_Replacement Algo/page replacement_home.html">Page Replacement Algorithm</a>
+              <a href="../Disk/disk.html">Disk Scheduling</a>
+              <a href="../file allocation/file.html">File Allocation</a>
+              <a href="../mft_mvt\MVFT.html">MFT and MVT</a>
+          </div>
+      </li> -->
+        <li><button onclick="location.href = '../about/about.html';" class="button button1">About</button></li>
+        <!-- <li><button class="button button1">References</button></li> -->
+            </ul>
+            </ul>
+        </div>
+    </ul>   
+        </div>
+</nav>
+
+<span id="header"><h1>Banker's Algorithm </h1></span>
+<div class="bankers-info">
+  <p>The Banker's Algorithm in OS is an algorithm used to manage and allocate resources in a multi-task environment. It is used to prevent deadlocks and ensure the system remains in a safe state. The algorithm works by keeping track of the available resources in the system and allocating them to processes in a way that ensures that the system will not run out of resources and enter a deadlock state. The Banker’s Algorithm in OS uses a combination of resource allocation and deadlock detection to ensure efficient resource usage and prevent system failures.</p>
+  <p>Let us look at a real-world case to better comprehend this algorithm. Assume there are ‘n’ account holders in a certain bank, and the total amount of their money is ‘x’. Now, if a person applies for a loan (say, to buy a house), the loan amount reduced from the total amount available in the bank gives us the residual amount, which must be more than ‘x’ in order for the loan to be sanctioned by the bank. It is done with the worst-case scenario in mind, in which all account holders arrive at the bank at the same moment to withdraw their money. As a result, the bank is always in a secure position.</p>
+  <p>Bankers algorithm in operating system works similarly. Each process within the system must send all important necessary details to the operating system, such as impending processes, resource requirements, delays, and so on. Based on these details, the operating system determines whether to execute the process or hold it in the waiting state to avoid system deadlocks. As a result, the Bankers algorithm is often referred to as the Deadlock Detection Algorithm.</p>
+  <p><b>Steps to simulate Banker’s Algorithm:</b></p>
+  <p>1.) Fill in the total available instances for each resource</p>
+  <p>2.) Fill in the matrix which decides how many resources are initialy allocated for each resource</p>
+  <p>3.) Fill in the matrx which decides the required resources for each process</p>
+  <p>4.) Run the simulator to find out whether there is a deadlock or not</p>
+  <p>5.) If there is no deadlock then a possible safe sequence is shown as output</p>
+</div>
+<center><button id="simulate-button" class="add-remove-simulate">Simulate Banker's Algorithm</button></center>
+
+<script>
+  document.getElementById('simulate-button').addEventListener('click', ()=>{
+    location.href = 'bankers.html';
+  })
+</script>
+</body>
+</html>

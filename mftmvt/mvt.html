@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVT Simulator</title>
+
+    <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .heading {
+        text-align: center;
+        background-color: #dff5ff;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-top: 2rem;
+      }
+
+      .block {
+        background-color: #427D9D;
+        color: #fff;
+        text-align: center;
+        place-items: center;
+        place-content: center;
+        justify-items: center;
+        justify-content: center;
+        border-radius: 0.2rem;
+        height: 50px;
+        margin-left: 2px;
+        position: relative;
+      }
+
+      .blocks-container {
+        display: flex;
+        min-width: 100%;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .process {
+        position: absolute;
+        height: 100%;
+        background-color: #007bff; /* Blue */
+        color: #fff; /* White */
+      }
+
+      .process-info {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav ms-auto me-4">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="mftmvt.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container">
+      <h1 class="heading">
+        Multiprogramming with Variable Number of Tasks (MVT)
+      </h1>
+
+      <div id="inputFormMemory">
+        <div class="form-group mt-4">
+          <label for="totalMemorySize">Enter size of Total memory</label>
+          <input type="number" class="form-control" id="totalMemorySize" />
+        </div>
+        <button class="btn btn-primary mt-2" onclick="initiateMemory()">
+          Initialize Memory
+        </button>
+      </div>
+
+      <div id="inputFormProcess" style="visibility: hidden">
+        <h3 class="mt-4" id="sizeIndicator">Remaining size : 200</h3>
+        <div class="form-group mt-4">
+          <label for="totalMemorySize">Enter Size of Process:</label>
+          <input type="number" class="form-control" id="processSize" />
+        </div>
+        <button class="btn btn-primary mt-2" onclick="allocateProcess()">
+          Allocate Process
+        </button>
+      </div>
+
+      <!-- The memory blocks appear here -->
+      <div id="memoryBlockContainer" class="blocks-container" style="display: none;" >
+        <!-- They come here -->
+        <!-- <span class="block" style="min-width: 20%">20</span>
+        <span class="block" style="min-width: 10%">10</span> -->
+      </div>
+
+      <div class="mt-4" id="processTable" style="visibility: hidden">
+        <h3>Process Table</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Process ID</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody id="processTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      let totalMemorySize;
+      let availableMemorySize;
+      let processId = 1;
+
+      function initiateMemory() {
+        totalMemorySize = parseInt(
+          document.getElementById("totalMemorySize").value
+        );
+        availableMemorySize = totalMemorySize;
+
+        if (isNaN(totalMemorySize) || totalMemorySize <= 0) {
+          alert("Please enter a valid total memory size.");
+          return;
+        }
+
+        document.getElementById("inputFormMemory").style.display = "none";
+        document.getElementById("inputFormProcess").style.visibility =
+          "visible";
+        document.getElementById("processTable").style.visibility = "visible";
+        document.getElementById("memoryBlockContainer").style.display = "flex";
+      }
+
+      function allocateProcess() {
+        const processSize = parseInt(
+          document.getElementById("processSize").value
+        );
+
+        if (isNaN(processSize) || processSize <= 0) {
+          alert("Please enter a valid process size.");
+          return;
+        }
+
+        if (availableMemorySize < processSize) {
+          alert("Not enough memory available to allocate this process.");
+          return;
+        }
+
+        updateProcessTable(processId, processSize);
+        addNewMemoryBlock(processSize, totalMemorySize);
+        availableMemorySize -= processSize;
+        document.getElementById("sizeIndicator").innerHTML = `Remaining size : ${availableMemorySize}`;
+
+        processId++;
+      }
+
+      function addNewMemoryBlock(processSize, totalMemorySize) {
+        const newBlock = document.createElement("span");
+        newBlock.className = "block";
+        newBlock.style.minWidth = `${(processSize / totalMemorySize) * 100 - 2}%`;
+        newBlock.innerHTML = processSize;
+        const blockContainer = document.getElementById("memoryBlockContainer");
+        blockContainer.appendChild(newBlock);
+      }
+
+      function updateProcessTable(processId, size) {
+        const tableBody = document.getElementById("processTableBody");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+                <td>${processId}</td>
+                <td>${size}</td>
+            `;
+        tableBody.appendChild(newRow);
+      }
+
+      function resetSimulation() {
+        totalMemorySize = 0;
+        processId = 1;
+
+        document.getElementById("memoryContainer").innerHTML = "";
+        document.getElementById("processTableBody").innerHTML = "";
+        document.getElementById("totalMemorySize").value = "";
+
+        document.getElementById("inputForm").style.display = "block";
+        document.getElementById("memoryBlock").style.display = "none";
+      }
+
+      function initiateSimulation() {
+        totalMemorySize = parseInt(
+          document.getElementById("totalMemorySize").value
+        );
+
+        if (isNaN(totalMemorySize) || totalMemorySize <= 0) {
+          alert("Please enter a valid total memory size.");
+          return;
+        }
+
+        document.getElementById("inputForm").style.display = "none";
+        document.getElementById("memoryBlock").style.display = "block";
+      }
+    </script>
+  </body>
+</html>

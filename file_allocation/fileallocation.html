@@ -69,7 +69,7 @@
           <div class="collapse navbar-collapse " id="navbarNav">
             <ul class="navbar-nav ms-auto me-4">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link active" href="#">About</a>
@@ -87,21 +87,21 @@
             <div>
                 <h3 class="heading">Sequential File Allocation</h3>
                 <p>Contiguous file allocation stores files in consecutive blocks on a disk, ensuring efficient sequential access and simplified management. This method is ideal for applications requiring continuous data access, like multimedia streaming. However, fragmentation can occur over time, leading to performance issues. Techniques like defragmentation and preallocation help mitigate fragmentation, maintaining optimal performance and storage efficiency.</p>
-                <a href="sequential.html" class="btn">Try</a>
+                <a href="sequential.html" class="btn">Simulate Sequential</a>
             </div>
         </div>
         <div class="file-allocation-method">
             <div>
                 <h3 class="heading">Linked File Allocation</h3>
                 <p>Linked file allocation manages files by linking each file's blocks through pointers, offering flexibility in file size and location. Each block contains data and a pointer to the next block in the file. This approach optimizes disk space usage, as files can be scattered across non-contiguous blocks. However, it may result in slower access times due to scattered block retrieval and the need to traverse pointers. Nonetheless, it's suitable for dynamic storage requirements and mitigates fragmentation issues seen in contiguous allocation. Efficient file deletion and dynamic file size adjustments are inherent advantages of linked allocation.</p>
-                <a href="linked.html" class="btn">Try</a>
+                <a href="linked.html" class="btn">Simulate Linked</a>
             </div>
         </div>
         <div class="file-allocation-method">
             <div>
                 <h3 class="heading">Indexed File Allocation</h3>
                 <p>Indexed file allocation employs a master index block to manage files efficiently. This master index block contains pointers to individual files stored on disk. Each file has its own index block, which serves as a directory for the file's data blocks. This method enables quick access to files by referencing the index block directly, reducing the time needed to locate file data. Unlike linked allocation, indexed allocation minimizes disk fragmentation by maintaining a centralized index structure. However, it may require additional disk space for index blocks and can lead to slower access times if the index becomes large. Nonetheless, indexed allocation excels in organizing and accessing files in a structured manner, making it suitable for systems with predictable file access patterns.</p>
-                <a href="indexed.html" class="btn">Try</a>
+                <a href="indexed.html" class="btn">Simulate Indexed</a>
             </div>
         </div>
     </div>

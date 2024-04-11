@@ -269,7 +269,9 @@
                     return 0;
                 }
             })
-            IndexBlock.innerHTML = `<h3>Index Block</h3><div style="display: flex; align-items: center;"><h4 style="margin-right: 10px;">Index Block for ${f1[0].name}</h4><button class="delete-button btn btn-primary mt-2" onclick="viewBlock('-1')">X</button></div>`;
+            IndexBlock.innerHTML = `<h3>Index Block</h3><div style="display: flex; align-items: center;">
+              <h4 style="margin-right: 10px;">Index Block for ${f1[0].name}</h4>
+              <button class="delete-button btn btn-primary mt-2" onclick="viewBlock('-1')">X</button></div>`;
 
             for(var i=0;i<indexes[id].length;i++){
                 var row = document.createElement("div");

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Allocation</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<style>
+  /* Custom CSS styles */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Added styles */
+  .file-allocation-method {
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Spacing between divs */
+  .file-allocation-method:not(:last-child) {
+    margin-bottom: 20px;
+  }
+  .heading {
+    text-align: center;
+    background-color: #dff5ff;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+  }
+  /* Better styling for paragraph tags */
+ p {
+    text-align: justify; /* Justify the text */
+    line-height: 1.75; /* Adjust line height for better readability */
+    margin-bottom: 20px; /* Add some bottom margin to separate paragraphs */
+    font-size: 18px; /* Increase font size */
+    padding: 2rem;
+}
+
+</style>
+
+<body>
+
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav ms-auto me-4">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">About</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+            <h1 class="heading">File Allocation</h1>
+            <p>File allocation methods play a crucial role in the efficient management of data storage in computer systems. These methods are designed to address various needs and requirements to ensure optimal utilization of storage resources. One fundamental requirement is efficient space utilization, aiming to minimize wasted storage space while maximizing the amount of data that can be stored. Additionally, fast access and retrieval of data are essential for supporting diverse applications and access patterns. Scalability is another key consideration, as file allocation methods must accommodate growing storage requirements without compromising performance. Minimization of fragmentation, both internal and external, helps maintain storage efficiency and access speed. Moreover, reliability and data integrity are paramount, requiring mechanisms to prevent data loss or corruption. Supporting concurrent access, flexibility, and ease of management further enhance the effectiveness of file allocation methods in modern computing environments. By addressing these needs, file allocation methods contribute to the overall efficiency, reliability, and performance of storage systems, ensuring that data is stored, accessed, and managed effectively.</p>
+        </div>
+        <div class="file-allocation-method">
+            <div>
+                <h3 class="heading">Sequential File Allocation</h3>
+                <p>Contiguous file allocation stores files in consecutive blocks on a disk, ensuring efficient sequential access and simplified management. This method is ideal for applications requiring continuous data access, like multimedia streaming. However, fragmentation can occur over time, leading to performance issues. Techniques like defragmentation and preallocation help mitigate fragmentation, maintaining optimal performance and storage efficiency.</p>
+                <a href="sequential.html" class="btn">Simulate Sequential</a>
+            </div>
+        </div>
+        <div class="file-allocation-method">
+            <div>
+                <h3 class="heading">Linked File Allocation</h3>
+                <p>Linked file allocation manages files by linking each file's blocks through pointers, offering flexibility in file size and location. Each block contains data and a pointer to the next block in the file. This approach optimizes disk space usage, as files can be scattered across non-contiguous blocks. However, it may result in slower access times due to scattered block retrieval and the need to traverse pointers. Nonetheless, it's suitable for dynamic storage requirements and mitigates fragmentation issues seen in contiguous allocation. Efficient file deletion and dynamic file size adjustments are inherent advantages of linked allocation.</p>
+                <a href="linked.html" class="btn">Simulate Linked</a>
+            </div>
+        </div>
+        <div class="file-allocation-method">
+            <div>
+                <h3 class="heading">Indexed File Allocation</h3>
+                <p>Indexed file allocation employs a master index block to manage files efficiently. This master index block contains pointers to individual files stored on disk. Each file has its own index block, which serves as a directory for the file's data blocks. This method enables quick access to files by referencing the index block directly, reducing the time needed to locate file data. Unlike linked allocation, indexed allocation minimizes disk fragmentation by maintaining a centralized index structure. However, it may require additional disk space for index blocks and can lead to slower access times if the index becomes large. Nonetheless, indexed allocation excels in organizing and accessing files in a structured manner, making it suitable for systems with predictable file access patterns.</p>
+                <a href="indexed.html" class="btn">Simulate Indexed</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

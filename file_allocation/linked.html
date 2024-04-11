@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linked</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<style>
+  .block {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    margin: 5px;
+    display: inline-block;
+    border-radius: 5px;  /* Add this line to create rounded corners */
+  }
+
+  .file-info-container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+    margin-bottom: 10px; /* Add some spacing between each file info block */
+  }
+
+  .file-info {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .delete-button {
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  .heading {
+    text-align: center;
+    background-color: #dff5ff;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+  }
+
+  .partition {
+    border: 1px solid #000;
+    border-radius: 0.2rem;
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    min-width: 10rem;
+    flex-direction: row;
+  }
+  .allocated {
+    background-color: #007bff; /* Blue */
+    color: #fff; /* White */
+  }
+  .free {
+    background-color: #dff5ff; /* White */
+    color: #000; /* Black */
+  }
+
+  /* New CSS for flex container */
+  .flex-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .flex-container > div {
+    width: 48%; /* Adjust as needed */
+  }
+</style>
+<body>
+  <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse " id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <h1 class="heading">Linked File Allocation</h1>
+    <form id="inputForm" class="form-group mt-4">
+      <label for="input1">Enter the size of Disk(in bytes):</label>
+      <input type="number" id="input1" class="form-control" name="input1" required>
+      <br><br>
+      <label for="input2">Enter the size of Blocks(in bytes):</label>
+      <input type="number" id="input2" class="form-control" name="input2" required>
+      <br><br>
+      <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+  
+    <div id="afterInitial" style="display: none">
+      <form id="inputForm123" class="form-group mt-4">
+        <label for="stringInput">File Name:</label>
+        <input type="text" id="stringInput" class="form-control" name="stringInput" required>
+        <br><br>
+        <label for="numberInput">Size(in bytes):</label>
+        <input type="number" id="numberInput" class="form-control" name="numberInput" required>
+        <br><br>
+        <button type="button" class="btn btn-primary mt-2" onclick="generateDirectory()">Add File</button>
+      </form>
+      <br>
+      <br>
+
+      <!-- Flex container for File Directory and Linked List -->
+      <div class="flex-container">
+        <!-- File Directory -->
+        <div id="Directory" style="padding: 10px; border: 1px solid #ddd; border-radius: 0.2rem;">
+          <h3>File Directory</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Color</th>
+                <th scope="col">Starting Pointer</th>
+                <th scope="col">Size</th>
+                <th scope="col">Index Block</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Linked List -->
+        <div id="IndexBlock" style="padding: 10px; border: 1px solid #ddd; border-radius: 0.2rem;">
+          
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <h3>Disk Blocks</h3>
+      <div id="container1" style="padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 0.2rem;">
+
+      </div>
+    </div>
+  </div>
+  <script>
+    var input1 = 0;
+    var input2 = 0;
+    var n=0
+    var array = Array(1).fill(0);
+    var files = []
+    var nexts = []
+    var id=0
+    const co = {}
+    var empty = 0
+    var containerDirecotry = document.getElementById("Directory");
+    var containerDiv = document.getElementById("container1");
+    var fileName = document.getElementById("stringInput");
+    var fileSize = document.getElementById("numberInput");
+    var IndexBlock = document.getElementById("IndexBlock");
+    document.getElementById("inputForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent form submission
+      input1 = parseInt(document.getElementById("input1").value);
+      input2 = parseInt(document.getElementById("input2").value);
+      // Check if the inputs are integers
+      if (!isNaN(input1) && !isNaN(input2)) {
+        //alert("Input 1: " + input1 + "\nInput 2: " + input2);
+        // Clear input values
+        var initial = document.getElementById("inputForm");
+        var final = document.getElementById("afterInitial");
+        n = Math.floor(input1/input2);
+        empty = n
+        array = Array(n).fill(-1);
+        nexts = Array(n).fill(-1)
+        initial.style.display = "none";
+        final.style.display = "block";
+        renderMem()
+        viewBlock('-1')
+        document.getElementById("input1").value = "";
+        document.getElementById("input2").value = "";
+      } else {
+        alert("Please enter valid integer values.");
+      }
+    });
+    function renderMem(){
+      containerDiv.innerHTML = '';
+      for(var i=0;i<n;i++){
+        var block = document.createElement("div");
+        block.classList.add("block");
+        
+        block.style.backgroundColor=co[array[i]];
+        containerDiv.appendChild(block);
+      }
+    }
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+    function generateDirectory(){
+      var stringInput = document.getElementById("stringInput").value;
+      var numberInput = parseInt(document.getElementById("numberInput").value);
+      var randomColor = getRandomColor();
+      var pos = findPossible(Math.ceil(numberInput/input2))
+      var s1 = Math.ceil(numberInput/input2)
+      
+      if (stringInput.trim() === "") {
+        alert("Enter a value for the string input");
+        return;
+      } else if (isNaN(numberInput)) {
+        alert("Enter a valid number for the input");
+        return;
+      }
+      fileName.value = ""
+      fileSize.value = ""
+      if(pos===-1){
+        alert("Not enough space.")
+      }
+      else{
+        var s123 = 0;
+        for(var i=0;i<n;i++){
+            if(array[i]==-1){
+                s123 = i;
+                break;
+            }
+        }
+        files.push({id:id,name:stringInput, l:s1,s:s123})
+        var p = s123;
+        array[s123] = id
+        for(var i=s123+1;i<n;i++){
+          if(array[i]===-1 && s1>1){
+            array[i] = id;
+            nexts[p] = i;
+            p=i;
+            s1--;
+          }
+        }
+        co[id] = randomColor
+        id=id+1;
+        renderMem();
+        renderDirectory();
+      }
+    }
+    function renderDirectory(){
+      var tbody = document.querySelector("#Directory table tbody");
+      tbody.innerHTML = '';
+      files.forEach(element => {
+        var row = document.createElement("tr");
+        row.id = "Directory"+element.id;
+        row.innerHTML = `
+          <td>${element.name}</td>
+          <td><div class="block" style="background-color: ${co[element.id]};"></div></td>
+          <td>${element.s}</td>
+          <td>${element.l}</td>
+          <td><button id="${element.id}" class="delete-button btn btn-primary mt-2" onclick="viewBlock(this.id)">View</button></td>
+          <td><button id="${element.id}" class="delete-button btn btn-primary mt-2" onclick="deleteFile(this)">-</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+    function viewBlock(id){
+        var int123 = parseInt(id)
+        console.log(int123)
+        IndexBlock.innerHTML = '';
+        if(int123 === -1){
+            IndexBlock.innerHTML = '<h3>Linked List</h3><h4>Please select a File</h4>';
+        }
+        else{
+            var f1 = files.filter((i)=>{
+                if(i.id === int123){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            })
+            f1 = f1[0]
+            IndexBlock.innerHTML = `<h3>Linked List</h3><div style="display: flex; align-items: center;"><h4 style="margin-right: 10px;">Linked List for ${f1.name}</h4><button class="delete-button btn btn-primary mt-2" onclick="viewBlock('-1')">X</button></div>`;
+            var p =f1.s
+            for(var i=0;i<f1.l;i++){
+                var row = document.createElement("div");
+                row.innerHTML=`<div>${p}</div>`
+                p = nexts[p]
+                IndexBlock.appendChild(row)
+            }
+        }
+    }
+    function deleteFile(button){
+      console.log(button.id)
+      var ele=0
+      var a1 = files.filter(function(item) {
+        if(item.id===parseInt(button.id)){ele = item}
+        return item.id !== parseInt(button.id);
+      });
+      files = a1
+      empty = empty + ele.l
+      for(var i=0;i<n;i++){
+        if(array[i] === ele.id){
+            array[i]=-1;
+            nexts[i]=-1
+        }
+      }
+      //console.log(files)
+      renderDirectory()
+      renderMem()
+      viewBlock('-1')
+    }
+    function findPossible(num) {
+      var flag = -1;
+      if(empty >= num){
+        return 1;
+      }
+      else{
+        empty = empty - num
+        return -1;
+      }
+    }
+  </script>
+</body>
+</html>

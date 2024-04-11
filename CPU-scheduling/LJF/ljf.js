@@ -224,47 +224,82 @@ $(document).ready(function () {
     for(i=0;i<n;i++)
       console.log(stuff[i].tat);
   }
-  function drawTable(i){
-    if(i<stuff.length){
-    var table = document.getElementById("ptable");
-    console.log(stuff[i].tat);
-    $("#ptable").append("<tr><td>"+stuff[i].no+"</td><td>"+stuff[i].at+"</td><td>"+stuff[i].bt1+"</td><td>"+stuff[i].wt+"</td><td>"+stuff[i].tat+"</td></tr>"); //changed here
-    drawTable(i+1);
+  function drawTable(i) {
+    if (i < stuff.length) {
+      var table = document.getElementById("ptable");
+      console.log(stuff[i].wt);
+      $("#ptable").append("<tr><td>" + stuff[i].no + "</td><td>" + stuff[i].at + "</td><td>" + stuff[i].bt1 + "</td><td>" + stuff[i].wt + "</td><td>" + stuff[i].tat + "</td></tr>");
+      drawTable(i + 1);
+    }
+    else {
+      var cardAdd = document.getElementById("cardAdd");
+      cardAdd.classList.add("card");
+      var element = document.getElementById("Average");
+      element.classList.add("card-body");
+      $("#Average").append("<b>Average Turn Around time : " + average_tat.toFixed(3) + "</b><br>");
+      $("#Average").append("<b>Average Waiting time: " + average_wt.toFixed(3) + "</b><br>");
+    }
+
   }
-  else
-  {
-    $("#Average").append("<b>The average waiting time of the given processes is "+average_wt+"</b><br>");
-    $("#Average").append("<b>The average turn around time of the given processes is "+average_tat+"</b><br>");
-    $("#Average").append("<b>The throughput of the given processes is "+throughput+"</b><br>");
-    $("#Average").append("<b>The CPU efficiency is "+cpu_efficiency+"%</b><br>");
-  }
-
-}
 
 
 
-  function displayBlock(i){
-    if(i == total){
-      document.getElementById("ptab").style.display='block';
+  function displayBlock(i) {
+    if (i == total) {
+      document.getElementById("ptab").style.display = 'inline-table';
       drawTable(0);
       return;
     }
 
-    var blockWidth = (sequence[i+1].start - sequence[i].start)*pixel;
+    var blockWidth = (sequence[i + 1].start - sequence[i].start) * pixel;
     var processName = sequence[i].n;
-    if(sequence[i].n==null)
-    {
-      $('#outer-div').append('<div class="block" id="process-'+sequence[i].start +'">CPU Idle<div class="bottom">'+ sequence[i+1].start +'</div></div>');
-    }
-    else
-    {
-      $('#outer-div').append('<div class="block" id="process-'+sequence[i].start +'">P-'+ sequence[i].n +'<div class="bottom">'+ sequence[i+1].start +'</div></div>');
-    }
-    $('#process-'+sequence[i].start).css('width',blockWidth);
+    document.getElementById("gantt").style.display = 'block';
+    document.getElementById("outer-div").style.display = 'inline-block';
+    document.getElementById("bt1").style.display = 'none';
+    document.getElementById("at1").style.display = 'none';
+    document.getElementById("add").style.display = 'none';
+    document.getElementById("start").style.display = 'none';
 
-    $('#process-'+sequence[i].start).fadeIn('slow',function(){
-      displayBlock(i+1);
+
+    if (sequence[i].n == null) {
+        $('#outer-div').append('<div class="block" id="process-' + sequence[i].start + '" style="left:' + sequence[i].start * pixel + 'px;background-color:rgba(112, 128, 144, 0.44);">CPU Idle<div class="bottom">' + sequence[i + 1].start + '</div></div>');
+      } else {
+        $('#outer-div').append('<div class="block" id="process-' + sequence[i].start + '" style="left:' + sequence[i].start * pixel + 'px;">P' + sequence[i].n + '<div class="bottom">' + sequence[i + 1].start + '</div></div>');
+      }
+      
+    $('#process-' + sequence[i].start).css('width', blockWidth);
+
+    $('#process-' + sequence[i].start).fadeIn('slow', function () {
+      displayBlock(i + 1);
     });
 
   }
 });
+
+function drawGanttChart() {
+    var chartContainer = document.getElementById("gantt-chart");
+    var chartData = [];
+  
+    for (var i = 0; i < sequence.length; i++) {
+      var block = sequence[i];
+      var blockWidth = (block.start - sequence[i - 1].start) * pixel;
+  
+      var chartBlock = document.createElement("div");
+      chartBlock.className = "chart-block";
+      chartBlock.style.width = blockWidth + "px";
+  
+      if (block.n === null) {
+        chartBlock.style.backgroundColor = "rgba(112, 128, 144, 0.44)";
+        chartBlock.textContent = "CPU Idle";
+      } else {
+        chartBlock.textContent = "P" + block.n;
+      }
+  
+      chartData.push(chartBlock);
+    }
+  
+    for (var j = 0; j < chartData.length; j++) {
+      chartContainer.appendChild(chartData[j]);
+    }
+  }
+  

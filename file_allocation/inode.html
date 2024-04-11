@@ -124,6 +124,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Color</th>
                 <th scope="col">Size</th>
+                <th scope="col">Inode Blocks</th>
                 <th scope="col">Delete</th>
               </tr>
             </thead>
@@ -268,7 +269,10 @@
                     return 0;
                 }
             })
-            IndexBlock.innerHTML = `<h3>Index Block</h3><div style="display: flex; align-items: center;"><h4 style="margin-right: 10px;">Inode Blocks for ${f1[0].name}</h4><button class="delete-button btn btn-primary mt-2" onclick="viewBlock('-1')">X</button></div>`;
+            IndexBlock.innerHTML = `<h3>Inode Block</h3>
+            <div style="display: flex; align-items: center;">
+              <h4 style="margin-right: 10px;">Inode Blocks for ${f1[0].name}</h4>
+              <button class="delete-button btn btn-primary mt-2" onclick="viewBlock('-1')">X</button></div>`;
             var numberOfInodes = Math.ceil(indexes[id].length/14)
             var used = 0;
             var mn = indexes[id].length

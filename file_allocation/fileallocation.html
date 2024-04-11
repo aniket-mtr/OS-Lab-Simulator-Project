@@ -104,6 +104,17 @@
                 <a href="indexed.html" class="btn">Simulate Indexed</a>
             </div>
         </div>
+        <div class="file-allocation-method">
+          <div>
+              <h3 class="heading">Inode File Allocation</h3>
+              <p>
+                Inodes, the file system's behind-the-scenes organizers, are data structures that act like detailed file jackets. Each inode stores a file's permissions, timestamps, and most importantly, pointers to the data blocks holding the actual content. These pointers come in flavors: direct pointers for small files, and for larger ones, a multi-level indirection scheme using single, double, or even triple indirect pointers. Inodes themselves reside in a designated inode table during filesystem creation, with the number of inodes limiting the total number of files. This way, inodes efficiently manage file allocation and retrieval, keeping your digital life organized despite data fragmentation across the disk.Inodes, the file system's behind-the-scenes organizers, are data structures that act like detailed file jackets. Each inode stores a file's permissions, timestamps, and most importantly, pointers to the data blocks holding the actual content. These pointers come in flavors: direct pointers for small files, and for larger ones, a multi-level indirection scheme using single, double, or even triple indirect pointers. Inodes themselves reside in a designated inode table during filesystem creation, with the number of inodes limiting the total number of files. This way, inodes efficiently manage file allocation and retrieval, keeping your digital life organized despite data fragmentation across the disk.
+                Inodes are primarily used in Unix-based operating systems  like Linux, macOS, and various server operating systems derived from Unix (e.g., BSD, Solaris). These systems rely on inodes for efficient file management and organization.
+                For simlicities sake we assume each pointer can point to 2 block locations.
+              </p>
+                <a href="inode.html" class="btn">Simulate Inode</a>
+          </div>
+      </div>
     </div>
 </body>
 </html>

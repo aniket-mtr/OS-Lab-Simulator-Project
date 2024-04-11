@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Scheduling Simulators</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .container {
+        margin-top: 50px;
+      }
+      .simulator-box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .simulator-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .simulator-description {
+        font-size: 16px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html"><strong>OS Simulator</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto me-4">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="about.html">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="text-center mb-5">DISK SCHEDULING</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              SSTF(Shortest Seek Time First)
+            </h2>
+            <p class="simulator-description">
+                The SSTF disk scheduling algorithm minimizes 
+                seek time by servicing the request closest to the current position of the 
+                disk arm first. It calculates the seek time for each request by measuring 
+                the distance between the current position and the requested track. The 
+                request with the shortest seek time is then selected and serviced next. 
+                This approach aims to reduce the overall time spent moving the disk arm, 
+                potentially improving disk performance. However, it may lead to starvation 
+                of requests located farther away from the current position
+            </p>
+            <a id="algo" href="sstf.html" class="btn btn-primary">Simulate SSTF</a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="simulator-box">
+            <h2 class="simulator-title">
+              FCFS(First Come First Serve)
+            </h2>
+            <p class="simulator-description">
+                The FCFS disk scheduling algorithm services disk requests in the order they
+                 arrive, without considering the distance between requests or the current 
+                 position of the disk arm. Requests are serviced sequentially from the 
+                 beginning of the queue to the end. While simple to implement, FCFS may result
+                 in longer seek times, especially if there are requests scattered across the disk. 
+                 This can lead to inefficient disk utilization and poor overall performance.
+            </p>
+            <a id="algo" href="fcfs.html" class="btn btn-primary">Simulate FCFS</a>
+          </div>
+        </div>
+        <div class="col-md-6">
+            <div class="simulator-box">
+              <h2 class="simulator-title">
+                SCAN 
+              </h2>
+              <p class="simulator-description">
+                The SCAN disk scheduling algorithm services requests by moving the disk arm 
+                in one direction (e.g., towards the outermost or innermost track) until it 
+                reaches the end of the disk, then reverses direction. Requests are serviced 
+                in the order they are encountered while scanning back and forth. SCAN minimizes 
+                seek time by serving requests efficiently along the path of the disk arm, 
+                reducing unnecessary movement compared to FCFS. However, it can lead to longer 
+                wait times for requests located at the extremes of the disk if there is 
+                continuous high disk activity.
+              </p>
+              <a id="algo" href="scan.html" class="btn btn-primary">Simulate SCAN</a>  
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="simulator-box">
+              <h2 class="simulator-title">
+                C-SCAN 
+              </h2>
+              <p class="simulator-description">
+                The C-SCAN (Circular SCAN) disk scheduling algorithm is similar to SCAN but 
+                differs in how it handles the end of the disk. Instead of reversing direction 
+                at the end, C-SCAN wraps around to the beginning of the disk, forming a circular 
+                path. This prevents excessive waiting times for requests near the end of the 
+                disk, as they are promptly serviced when the disk arm returns to the beginning. 
+                C-SCAN is particularly useful for systems with high disk activity, as it 
+                ensures more equitable servicing of requests across the disk surface compared 
+                to SCAN.
+              </p>
+              <a id="algo" href="cscan.html" class="btn btn-primary">Simulate C-SCAN</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="simulator-box">
+              <h2 class="simulator-title">
+                LOOK 
+              </h2>
+              <p class="simulator-description">
+                The LOOK disk scheduling algorithm is similar to SCAN but differs in its handling 
+                of requests at the end of the disk. Instead of moving the disk arm to the end of 
+                the disk and reversing direction, LOOK stops at the last request in the current 
+                direction and then reverses direction. This prevents unnecessary movement to the 
+                end of the disk and back, reducing seek time. LOOK serves requests along the path 
+                of the disk arm without scanning beyond the last request in each direction, 
+                resulting in potentially improved performance compared to SCAN.
+              </p>
+              <a id="algo" href="look.html" class="btn btn-primary">Simulate LOOK</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="simulator-box">
+              <h2 class="simulator-title">
+                C-LOOK 
+              </h2>
+              <p class="simulator-description">
+                The C-LOOK (Circular LOOK) disk scheduling algorithm is an improvement over LOOK, 
+                focusing on reducing seek time by eliminating unnecessary movement at the ends 
+                of the disk. Similar to C-SCAN, C-LOOK wraps around to the beginning of the disk 
+                after servicing requests in one direction, forming a circular path. It services 
+                requests only up to the last request in each direction, avoiding unnecessary 
+                scanning to the end of the disk. C-LOOK aims to provide more efficient disk 
+                utilization and reduced seek time compared to LOOK, particularly in scenarios 
+                with high disk activity and varying seek distances.
+              </p>
+              <a id="algo" href="clook.html" class="btn btn-primary">Simulate C-LOOK</a>
+            </div>
+        </div>
+        
+  
+  
+
+</body>
+  </html>

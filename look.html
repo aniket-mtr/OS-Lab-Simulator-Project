@@ -1,0 +1,162 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOOK Simulator</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+      .heading {
+        text-align: center;
+        background-color: #dff5ff;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-top: 2rem;
+      }
+
+      .partition {
+        border: 1px solid #000;
+        border-radius: 0.2rem;
+        margin: 10px;
+        padding: 10px;
+        display: flex;
+        min-width: 10rem;
+        flex-direction: row;
+      }
+      .allocated {
+        background-color: #007bff; /* Blue */
+        color: #fff; /* White */
+      }
+      .free {
+        background-color: #dff5ff; /* White */
+        color: #000; /* Black */
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse " id="navbarNav">
+          <ul class="navbar-nav ms-auto me-4">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="container">
+      <h1 class="heading">LOOK</h1>
+      <script>
+        function admSelectCheck(nameSelect)
+        {
+            console.log(nameSelect);
+            if(nameSelect){
+                x3 = document.getElementById("o3").value;
+                x4 = document.getElementById("o4").value;
+                x5 = document.getElementById("o5").value;
+                x6 = document.getElementById("o6").value;
+                x7 = document.getElementById("o7").value;
+                if(x3 == nameSelect.value || x4 == nameSelect.value || x5 == nameSelect.value || x6 == nameSelect.value || x7 == nameSelect.value){
+                    document.getElementById("admDivCheck").style.display = "block";
+                }
+                else{
+                    document.getElementById("admDivCheck").style.display = "none";
+                }
+            }
+            else{
+                document.getElementById("admDivCheck").style.display = "none";
+            }
+        }
+        </script>
+
+      <div class="left transform">
+        <form name="myForm">
+          <fieldset>
+              <div class="row2">
+                  <div class="form-group">
+                      <label for="exampleSelect1">Algorithm</label>
+                        <select class="form-control" id="algorithm">
+                          <option id="o5" value="look">LOOK</option>
+                        </select>
+                  </div>
+                  <div class="form-group" id="second">
+                      <label for="exampleSelect1">Direction</label>
+                        <select class="form-control" id="direction">
+                          <option value="left" selected="selected">Left</option>
+                          <option value="right">Right</option>
+                        </select>
+                  </div>
+              </div>
+              <div class="row2">
+
+                  <div class="form-group">
+
+                      <label class="col-form-label" for="inputDefault">Sequence of cylinders</label>
+                      <input class="form-control" id="bitstream-input" name="bitstream" placeholder="Space-separated sequence" type="text" size="35">
+                  </div>
+                </div>
+              <div class="row2">
+                  <div class="form-group">
+                      <label class="col-form-label" for="inputDefault">Initial cylinder</label>
+                      <input class="form-control" id="initial-input" name="intial" type="text" size="5">
+                  </div>
+                  <div class="form-group" id="second">
+                      <label class="col-form-label" for="inputDefault">Last cylinder</label>
+                      <input class="form-control" id="final-input" name="final" type="text" size="5">
+                  </div>
+              </div>
+          </fieldset>
+        </form>
+        <button type="submit" id="plot-button" class="btn btn-primary" onclick="getBitStreamAndPlot(event, document.getElementById('bitstream-input').value, document.getElementById('initial-input').value, document.getElementById('final-input').value, document.getElementById('algorithm').value,document.getElementById('direction').value)"><a href="#grph" style="color: white; text-decoration: none;">&nbsp;Plot&nbsp;</a></button>
+        <button type="submit" id="animate-button" class="btn btn-primary">Animate</button>
+        <button type="submit" id="cmpr-button" class="btn btn-primary" onclick="cmprPlot(event, document.getElementById('bitstream-input').value, document.getElementById('initial-input').value, document.getElementById('final-input').value, document.getElementById('direction').value)"><a href="#cmpr" style="color: white; text-decoration: none;">&nbsp;Compare&nbsp;</a></button>
+       
+      </div>
+
+      <div class="right">
+        <div id="am_alg_name"></div>
+        <div id="cl-seek"></div>
+        <div id="am_alg_seek"></div>
+        <canvas id="canvas" width="10" height="10"></canvas>
+      </div>
+
+    </div>
+
+    <div id="grph" class="container2">
+      <div id="plt_alg_name"></div>
+      <div id="graph_area"></div>
+      <div id="plt_alg_seek"></div>
+      <div id="cal-seek"></div>
+    </div>
+
+
+    <div id="cmpr" class="container3">
+      <div id="cmpr-head"></div>
+      <div id="cmpr_area"></div>
+      
+    </div>
+
+  </div>
+  
+
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="myscript.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    
+
+
+</body></html>

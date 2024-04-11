@@ -17,10 +17,10 @@
       <div class="collapse navbar-collapse " id="navbarNav">
         <ul class="navbar-nav ms-auto me-4">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">About</a>
+            <a class="nav-link active" href="../index.html">About</a>
           </li>
         </ul>
       </div>
@@ -91,6 +91,40 @@
     <li> If time quantum is very high then RR degrades to FCFS.</li>
   </ul>
   <button onclick="location.href='RR/round-robin.html'">Simulate</button>
+  <h2>SRTF </h2>
+ 
+  <p> the process with the smallest amount of time remaining until completion is selected to execute. Since the currently executing process is the one with the shortest amount of time remaining by definition, and since that time should only reduce as execution progresses, processes will always run until they complete or a new process is added that requires a smaller amount of time. </p>
+    <h4>Advantages:</h4>
+  <ul>
+    <li>SRTF algorithm makes the processing of the jobs faster than SJN algorithm, given it’s overhead charges are not counted. </li>
+    <li> Allows for easier management of library updates or replacements without recompiling the program.</li>
+    <li>Enables efficient memory usage, as libraries can be shared among multiple instances of the program.</li>
+    <li> Provides better portability, as the program can be executed on different systems with compatible libraries available at runtime. </li>
+  </ul>
+  <h4>Disadvantages:</h4>
+  <ul>
+    <li>The context switch is done a lot more times in SRTF than in SJN, and consumes CPU’s valuable time for processing. This adds up to it’s processing time and diminishes it’s advantage of fast processing.</li>
+    <li>Slightly slower program startup due to the additional linking process.</li>
+    <li>Requires proper handling of library dependencies to ensure correct execution.</li>
+    <li>Debugging can be slightly more complex, as libraries are separate entities loaded at runtime. </li>
+  </ul>
+    <button onclick="location.href='SRTF/srtf.html'">Simulate</button>
+    <h2>LJF </h2>
+ 
+  <p> This algorithm is based on the burst time of the processes. The processes are put into the ready queue based on their burst times i.e., in descending order of the burst times. As the name suggests this algorithm is based on the fact that the process with the largest burst time is processed first. The burst time of only those processes is considered that have arrived in the system until that time. Its preemptive version is called Longest Remaining Time First (LRTF) algorithm.  </p>
+    <h4>Advantages:</h4>
+  <ul>
+    <li>No other process can execute until the longest job or process executes completely.</li>
+    <li> All the jobs or processes finish at the same time approximately.</li>
+  </ul>
+  <h4>Disadvantages:</h4>
+  <ul>
+    <li>This algorithm gives a very high average waiting time and average turn-around time for a given set of processes.</li>
+    <li>This may lead to a convoy effect.</li>
+    <li>It may happen that a short process may never get executed and the system keeps on executing the longer processes.</li>
+    <li>It reduces the processing speed and thus reduces the efficiency and utilization of the system. </li>
+  </ul>
+    <button onclick="location.href='LJF/ljf.html'">Simulate</button>
 </div>
 </body>
 </html>

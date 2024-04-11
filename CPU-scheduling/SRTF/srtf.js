@@ -1,19 +1,20 @@
 
-var sequence = [];
+
+var sequence;
 var complete;
 var time;
 var i;
 var total;
 var proc;
 var n;
-var average_wt = 0;
-var average_tat = 0;
-var stuff = [];
-var index = 1;
+var at=[];
+var bt=[];
+var stuff=[];
+var index=1;
+var average_wt;
+var average_tat;
 var throughput;
-var index = 1;
 var cpu_efficiency;
-var mod = 0;
 $(document).ready(function () {
   $('#add').click(function () {
     AddtoList();
@@ -78,161 +79,146 @@ $(document).ready(function () {
     console.log(stuff);
     DisplayList();
   };
-  $('#start').click(function () {
-
-
-    fcfs();
+  $('#start').click(function(){
+    srtf();
     var i = 0;
-    console.log(total);
-    console.log(sequence[total].start);
+  console.log(total);
+   console.log(sequence[total].start);
     var totalTime = sequence[total].start;
-    pixel = parseInt(800 / totalTime);
-    console.log("%d---%d\n", totalTime, pixel);
-    var containerWidth = pixel * totalTime + 2;
-    console.log("containerWidth is %d", containerWidth);
-    $('#outer-div').css('width', containerWidth + 'px');
+    pixel = parseInt(600/totalTime);
+    console.log("%d---%d\n",totalTime,pixel);
+    var containerWidth = pixel*totalTime + 2;
+    console.log("containerWidth is %d",containerWidth);
+    $('#outer-div').css('width',containerWidth+'px');
     displayBlock(i);
   })
-  var Q = [];
-  function fcfs() {
-    var proc = [];
-    for (i = 0; i < stuff.length; i++) {
-      proc.push(i + 1);
+  function srtf(){
+    var proc=[];
+    for(i=0;i<stuff.length;i++){
+      proc.push(i+1);
     }
-    var n = stuff.length;
-    for (i = 0; i < n; i++) {
-      for (j = i + 1; j < n; j++) {
-        if (stuff[i].at > stuff[j].at) {
+    var n=stuff.length;
+    for(i=0;i<n;i++){
+      for(j=i+1;j<n;j++){
+        if(stuff[i].at>stuff[j].at)
+        {
           var temp;
-          temp = stuff[i];
-          stuff[i] = stuff[j];
-          stuff[j] = temp;
-          temp = proc[i];
-          proc[i] = proc[j];
-          proc[j] = temp;
+          temp=stuff[i];
+          stuff[i]=stuff[j];
+          stuff[j]=temp;
+          temp=proc[i];
+          proc[i]=proc[j];
+          proc[j]=temp;
         }
       }
     }
-    n = stuff.length;
     console.log(stuff);
-    var time = 0;
-    var complete = 0;
-    var temp = null;
+    var time=0;
+    var complete=0;
+    var temp=-1000;
     var st_time;
-    sequence = [];
-    if (stuff[0].at > 0) {
-      console.log("Arrival time of the first process is not zero!");
-      sequence.push({ start: 0, n: null });
-      time += stuff[0].at;
-    }
-    Enqueue(0);
-    var temp = null;
-    while (complete != n) {
-      var index;
-      if (Q.length > 0)
-        index = Dequeue();
-      else
-        index = null;
-      if (index != null) {
-        if (stuff[index].point == 0) {
-          stuff[index].point++;
-          stuff[index].check = 1;
-          sequence.push({ start: time, n: proc[index] });
-          time += stuff[index].rt[0];
-          if (stuff[index].rt[1] == 0 && stuff[index].rt[2] == 0) {
-            complete++;
-            stuff[index].finish = 1;
-            stuff[index].tat = time - stuff[index].at;
-            stuff[index].wt = time - stuff[index].at - stuff[index].bt1;
-          }
-          for (j = 0; j < n; j++) {
-            if (stuff[j].at <= time && stuff[j].finish == 0 && stuff[j].check == 0 && Q.indexOf(j) == -1)
-              Enqueue(j);
-            if (stuff[j].at <= time && stuff[j].check == 1 && stuff[j].finish == 0 && j != index) {
-              stuff[j].rt[1] -= stuff[index].rt[0];
-              if (stuff[j].rt[1] <= 0) {
-                stuff[j].check = 0;
-                Enqueue(j);
-                stuff[j].point = 2;
-              }
-            }
-          }
-
+    sequence=[];
+    while(complete!=n)
+    {
+      var min=1000;
+      var minindex=100;
+      for(i=0;i<n;i++){
+        if(stuff[i].at<=time && stuff[i].finish==0 && (stuff[i].point==0 || stuff[i].point==2) && stuff[i].check==0 && stuff[i].rt[stuff[i].point]<min){
+          min=stuff[i].rt[stuff[i].point];
+          minindex=i;
         }
-        else if (stuff[index].point == 2) {
-          complete++;
-          stuff[index].finish = 1;
-          sequence.push({ start: time, n: proc[index] });
-          time += stuff[index].rt[2];
-          stuff[index].tat = time - stuff[index].at;
-          stuff[index].wt = time - stuff[index].bt1 - stuff[index].bt2 - stuff[index].at;
-          for (j = 0; j < n; j++) {
-            if (stuff[j].at <= time && stuff[j].finish == 0 && stuff[j].check == 0 && Q.indexOf(j) == -1)
-              Enqueue(j);
-            if (stuff[j].at <= time && stuff[j].check == 1 && stuff[j].finish == 0 && j != index) {
-              stuff[j].rt[1] -= stuff[index].rt[2];
-              console.log(stuff[j].rt);
-              if (stuff[j].rt[1] <= 0) {
-                stuff[j].check = 0;
-                Enqueue(j);
-                stuff[j].point = 2;
-              }
-            }
-          }
-        }
-        temp = index;
       }
-      else if (index == null) {
-        if (temp != index) {
-          sequence.push({ start: time, n: null });
+      console.log(minindex);
+      if(minindex<stuff.length){
+        if(temp!=minindex){
+          st_time=time;
         }
-        time++;
-        for (j = 0; j < n; j++) {
-          if (stuff[j].at <= time && stuff[j].finish == 0 && stuff[j].check == 0 && Q.indexOf(j) == -1)
-            Enqueue(j);
-          if (stuff[j].at <= time && stuff[j].check == 1 && stuff[j].finish == 0 && j != index) {
-            stuff[j].rt[1]--;
-            if (stuff[j].rt[1] <= 0) {
-              stuff[j].check = 0;
-              Enqueue(j);
-              stuff[j].point++;
+        stuff[minindex].rt[stuff[minindex].point]=stuff[minindex].rt[stuff[minindex].point]-1;
+        time=time+1;
+        console.log(time);
+        console.log(minindex);
+        if(temp!=minindex){
+          sequence.push({start:st_time,n:stuff[minindex].no});
+        }
+        for(i=0;i<stuff.length;i++){
+          if(stuff[i].check==1){
+            stuff[i].rt[stuff[i].point]--;
+            if(stuff[i].rt[stuff[i].point]==0)
+            {
+              stuff[i].check=0;
+              stuff[i].point++;
             }
           }
         }
-        temp = index;
+        if(stuff[minindex].rt[stuff[minindex].point]==0){
+          if(stuff[minindex].point==0){
+            if(stuff[minindex].rt[1]==0 && stuff[minindex].rt[2]==0)
+            {
+              complete++;
+              stuff[minindex].finish=1;
+              stuff[minindex].tat=time-stuff[minindex].at;
+              stuff[minindex].wt=stuff[minindex].tat-stuff[minindex].bt1-stuff[minindex].bt2;
+            }
+            stuff[minindex].check=1;
+            stuff[minindex].point=1;
+          }
+          if(stuff[minindex].point==2){
+            console.log(minindex);
+            complete=complete+1;
+            stuff[minindex].tat=time-stuff[minindex].at;
+            stuff[minindex].wt=stuff[minindex].tat-stuff[minindex].bt1-stuff[minindex].bt2;
+            stuff[minindex].finish=1;
+            console.log(stuff);
+          }
+        }
+        temp=minindex;
       }
-      console.log(Q);
-      console.log(complete);
-
+      if(min==1000 && minindex==100){
+        console.log(time);
+        var temp1=null;
+        if(temp!=temp1)
+          st_time=time;
+        time=time+1;
+        if(temp!=temp1){
+          sequence.push({start:st_time,n:null});
+        }
+        for(i=0;i<stuff.length;i++){
+          if(stuff[i].check==1){
+            stuff[i].rt[stuff[i].point]--;
+            if(stuff[i].rt[stuff[i].point]==0)
+            {
+              stuff[i].check=0;
+              stuff[i].point=2;
+            }
+          }
+        }
+        temp=null;
+        console.log(time);
+      }
     }
-    sequence.push({ start: time, n: -1 });
+    sequence.push({start:time,n:-1});
     console.log(sequence);
-    console.log(stuff);
-    total = sequence.length - 1;
+    total = sequence.length-1;
     console.log(total);
-    var sum_at = 0;
-    for (i = 0; i < n; i++)
-      sum_at += stuff[i].wt;
-    average_wt = sum_at / n;
-    var sum_tat = 0;
-    for (i = 0; i < n; i++)
-      sum_tat += stuff[i].tat;
-    average_tat = sum_tat / n;
+    var sum_at=0;
+    for(i=0;i<n;i++)
+      sum_at+=stuff[i].wt;
+    average_wt=sum_at/n;
+    var sum_tat=0;
+    for(i=0;i<n;i++)
+      sum_tat+=stuff[i].tat;
+    average_tat=sum_tat/n;
     var pixel = 0;
-    var sum_null = 0;
-    throughput = n / time;
-    for (i = 0; i < sequence.length; i++) {
-      if (sequence[i].n == null) {
-        sum_null += sequence[i + 1].start - sequence[i].start;
+    var sum_null=0;
+    throughput=n/time;
+    for(i=0;i<sequence.length;i++)
+    {
+      if(sequence[i].n==null)
+      {
+        sum_null+=sequence[i+1].start-sequence[i].start;
       }
     }
-    cpu_efficiency = ((time - sum_null) / time) * 100;
-  }
-  function Enqueue(i) {
-    Q.push(i);
-  }
-  function Dequeue(i) {
-    return Q.shift();
+    cpu_efficiency=((time-sum_null)/time)*100;
   }
 
   function drawTable(i) {

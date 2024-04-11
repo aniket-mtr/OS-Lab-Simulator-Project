@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paging Simulator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="./index.html"><strong>OS Simulator</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse " id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="./about.html">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="heading">Paging</h1>
+
+    <div class="left transform">
+      <form name="myForm">
+        <fieldset>
+          <div class="row2">
+            <div class="form-group">
+              <label class="col-form-label" for="inputDefault">Memory Size</label>
+              <input class="form-control" id="memorySize" name="memorySize" type="number" required>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label" for="inputDefault">Page Size</label>
+              <input class="form-control" id="pageSize" name="pageSize" type="number" required>
+            </div>
+            <div class="form-group">
+              <label class="col-form-label" for="inputDefault">Number of processes</label>
+              <input class="form-control" id="numProcesses" name="numProcesses" type="number" required>
+            </div>
+            </br><button onclick="initializePageTable(event)" class="btn btn-primary">Initialize Page Table</button></br>
+          </div>
+          <div class="page-table-section">
+            <table id="page-table">
+              <thead>
+                </br><tr>
+                  <th>Process</th>
+                  <th>Pages</th>
+                  <th>Frames</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="row2">
+            <div class="translate-address-section">
+              <label class="col-form-label" for="inputDefault">Process Number</label>
+              <input class="form-control" id="processNumber" name="processNumber" type="number">
+            </div>
+          </div>
+          <div class="row2">
+            <div class="form-group">
+              <label class="col-form-label" for="inputDefault">Page Number</label>
+              <input class="form-control" id="pageNumber" name="pageNumber" type="number">
+            </div>
+            <div class="form-group" id="second">
+              <label class="col-form-label" for="inputDefault">Offset</label>
+              <input class="form-control" id="offset" name="offset" type="number">
+            </div>
+            <div id="output">
+              </br><button onclick="translateAddress(event)" class="btn btn-primary">Translate Address</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/bootstrap.min.js"></script>
+  <script src="scr.js"></script>
+</body>
+</html>

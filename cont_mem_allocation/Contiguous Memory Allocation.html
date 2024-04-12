@@ -73,7 +73,7 @@
             when memory is initially empty and when a process is deleted. The second kind might find themselves
             becoming part of another hole or holes adjacent to the process in memory during its running time.
             Our specific implementation assigns empty memory to processes from the end of the hole. There are 3
-            algorithms to consider when
+            algorithms to consider when allocating holes to processes.
           </p>
           <h2 class="simulator-title">
             Hole Allocation Algorithms
@@ -91,8 +91,7 @@
           </p>
           <p class="simulator-description">
             3. Best-Fit: This algorithm goes through all the holes in memory sequentially and allocates the process to
-            the best fitting hole: that is, the hole that can accomodate process and is the closest to its size in
-            totalMemorySize.
+            the best fitting hole: that is, the hole that can accomodate process and is the closest to its size.
           </p>
           <h2 class="simulator-title">
             Extra Implementation

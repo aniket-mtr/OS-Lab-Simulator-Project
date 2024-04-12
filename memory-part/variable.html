@@ -36,6 +36,20 @@
         position: relative;
       }
 
+      .block-tmp {
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        place-items: center;
+        place-content: center;
+        justify-items: center;
+        justify-content: center;
+        border-radius: 0.2rem;
+        height: 50px;
+        margin-left: 2px;
+        position: relative;
+      }
+
       .blocks-container {
         display: flex;
         min-width: 100%;
@@ -123,11 +137,13 @@
             <tr>
               <th>Process ID</th>
               <th>Size</th>
+              <th>Free Up</th>
             </tr>
           </thead>
           <tbody id="processTableBody"></tbody>
         </table>
       </div>
+      <button class="btn btn-primary mt-2" onclick="freeUpMemory()" id="perform-compaction-btn" style="visibility: hidden"> Perform Compaction </button>
     </div>
 
     <script>
@@ -151,6 +167,7 @@
           "visible";
         document.getElementById("processTable").style.visibility = "visible";
         document.getElementById("memoryBlockContainer").style.display = "flex";
+        document.getElementById("perform-compaction-btn").style.visibility = "visible";
       }
 
       function allocateProcess() {
@@ -169,7 +186,7 @@
         }
 
         updateProcessTable(processId, processSize);
-        addNewMemoryBlock(processSize, totalMemorySize);
+        addNewMemoryBlock(processSize, totalMemorySize ,processId);
         availableMemorySize -= processSize;
         document.getElementById("sizeIndicator").innerHTML = `Remaining size : ${availableMemorySize}`;
 
@@ -181,6 +198,7 @@
         newBlock.className = "block";
         newBlock.style.minWidth = `${(processSize / totalMemorySize) * 100 - 2}%`;
         newBlock.innerHTML = processSize;
+        newBlock.id = `block_${processId}`;
         const blockContainer = document.getElementById("memoryBlockContainer");
         blockContainer.appendChild(newBlock);
       }
@@ -191,8 +209,45 @@
         newRow.innerHTML = `
                 <td>${processId}</td>
                 <td>${size}</td>
+                <td><input type="checkbox" onchange="changeColor()" class="row-checkbox" id="partition_${processId}" ></td>
             `;
         tableBody.appendChild(newRow);
+      }
+
+      function changeColor() {
+        const checkboxes = document.getElementsByClassName("row-checkbox");
+        for (let i = 0; i < checkboxes.length; i++) {
+          if (checkboxes[i].checked) {
+            const processId = parseInt(checkboxes[i].id.split("_")[1]);
+            const block = document.getElementById(`block_${processId}`);
+            block.className = "block-tmp";
+        }
+      }
+    }
+
+      function freeUpMemory(event) {
+        const checkboxes = document.getElementsByClassName("row-checkbox");
+        let freedMemory = 0;
+
+        for (let i = 0; i < checkboxes.length; i++) {
+          if (checkboxes[i].checked) {
+            const processSize = parseInt(
+              checkboxes[i].parentNode.previousElementSibling.innerHTML
+            );
+            freedMemory += processSize;
+            checkboxes[i].parentNode.parentNode.remove();
+          }
+        }
+
+        availableMemorySize += freedMemory;
+
+        // remove the blocks
+        const blocks = document.getElementsByClassName("block-tmp");
+        for (let i = 0; i < blocks.length; i++) {
+          blocks[i].remove();
+        }
+
+        document.getElementById("sizeIndicator").innerHTML = `Remaining size : ${availableMemorySize}`;
       }
 
       function resetSimulation() {

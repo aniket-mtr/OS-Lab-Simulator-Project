@@ -83,6 +83,8 @@
 
         <h3 class="mt-4">Input Process Size:</h3>
         <input type="number" class="form-control" id="processSize" />
+        <h3 class="mt-4">Input Partition Number:</h3>
+        <input type="number" class="form-control" id="partitionNumber" />
         <button class="btn btn-primary mt-2" onclick="allocateProcess()">
           Allocate Process
         </button>
@@ -96,17 +98,13 @@
               <th>Process ID</th>
               <th>Size</th>
               <th>Free Space</th>
+              <th>Partition</th>
+              <th>Free allocated</th>
             </tr>
           </thead>
           <tbody id="processTableBody"></tbody>
         </table>
-      </div>
-
-      <!-- Display internal fragmentation -->
-      <div class="mt-4" id="internalFragmentation" style="visibility: hidden">
-        <h3>Internal Fragmentation:</h3>
-        <p id="internalFragmentationValue" class="mt-2"></p>
-        <button class="btn btn-primary mt-2" onclick="calculateInternalFragmentation()"> Calculate </button>
+        <button class="btn btn-primary mt-2" onclick="freeUpMemory()"> Freeup Memory </button>
       </div>
     </div>
 
@@ -114,6 +112,7 @@
     <script>
       let partitionSize;
       let numPartitions;
+      let AllocatedPartition = [];
       let internalFragmentation = 0;
       let memoryArray = [];
       let currIndex = 0;
@@ -151,54 +150,80 @@
         const processSize = parseInt(
           document.getElementById("processSize").value
         );
+        const partitionNumber = parseInt(
+          document.getElementById("partitionNumber").value
+        );
+
+        if(AllocatedPartition.includes(partitionNumber)){
+          alert("Partition is already allocated");
+          return;
+        }
 
         if (isNaN(processSize) || processSize <= 0) {
           alert("Please enter a valid process size.");
           return;
         }
 
-        if (currIndex >= numPartitions) {
-          alert("All partitions are filled.");
+        if (isNaN(partitionNumber) || partitionNumber < 0 || partitionNumber >= numPartitions) {
+          alert("Please enter a valid partition number.");
           return;
         }
 
-        if (memoryArray[currIndex] >= processSize) {
-          const partitionId = `partition_${currIndex}`;
+        if (memoryArray[partitionNumber] >= processSize) {
+          const partitionId = `partition_${partitionNumber}`;
           const partition = document.getElementById(partitionId);
 
-          memoryArray[currIndex] -= processSize;
+          memoryArray[partitionNumber] -= processSize;
           const allocatedSpace = (processSize / partitionSize) * 100;
           const freeSpace = 100 - allocatedSpace;
 
           partition.innerHTML = "";
           partition.innerHTML += `<div class="allocated" style="width: ${allocatedSpace}%; flex-grow: 1;">${processSize}</div>`;
-          partition.innerHTML += `<div class="free" style="width: ${freeSpace}%; flex-grow: 1;">${memoryArray[currIndex]}</div>`;
+          partition.innerHTML += `<div class="free" style="width: ${freeSpace}%; flex-grow: 1;">${memoryArray[partitionNumber]}</div>`;
 
-          updateProcessTable(processId, processSize, memoryArray[currIndex]);
+          updateProcessTable(processId, processSize, memoryArray[partitionNumber],partitionNumber);
 
           processId++;
-          currIndex++;
+          AllocatedPartition.push(partitionNumber);
           internalFragmentation += partitionSize - processSize;
         } else {
           alert("No available partition space for this process size.");
         }
       }
 
-      function updateProcessTable(processId, size, freeSpace) {
+      function freeUpMemory() {
+        const checkboxes = document.getElementsByClassName("row-checkbox");
+        for (let i = 0; i < checkboxes.length; i++) {
+          if (checkboxes[i].checked) {
+            const checkbox = checkboxes[i];
+            const partitionNumber = parseInt(checkbox.id.split("_")[1]);
+            const partitionId = `partition_${partitionNumber}`
+            alert(`Partition ${partitionNumber} is freed up`);
+            const partition = document.getElementById(partitionId);
+            partition.innerHTML = `<strong>Partition ${partitionNumber}:</strong> Size: ${partitionSize}`;
+            memoryArray[partitionNumber] = partitionSize;
+            AllocatedPartition = AllocatedPartition.filter((item) => item !== partitionNumber);
+
+            // Remove the row from the process table
+            const row = document.getElementById(`rowpart_${partitionNumber}`);
+            row.remove();
+
+          }
+        }
+      }
+
+      function updateProcessTable(processId, size, freeSpace , partitionNumber) {
         const tableBody = document.getElementById("processTableBody");
-        const newRow = document.createElement("tr");
+        let newRow = document.createElement("tr");
+        newRow.id = `rowpart_${partitionNumber}`;
         newRow.innerHTML = `
         <td>${processId}</td>
         <td>${size}</td>
         <td>${freeSpace}</td>
+        <td>${partitionNumber}</td>
+        <td><input type="checkbox" class="row-checkbox" id="partition_${partitionNumber}" ></td>
       `;
         tableBody.appendChild(newRow);
-      }
-
-      function calculateInternalFragmentation() {
-        document.getElementById(
-          "internalFragmentationValue"
-        ).innerText = internalFragmentation;
       }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

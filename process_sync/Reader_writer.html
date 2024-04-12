@@ -108,7 +108,7 @@ function startWriting() {
 
 function read() {
   if (writing || writers > 0) {
-    setTimeout(read, 1000);
+    setTimeout(read, 2000);
   } else {
     // Simulate reading process
     const output = document.getElementById("output");
@@ -123,7 +123,7 @@ function read() {
 
 function write() {
   if (writing || readers > 0 || writers > 1) {
-    setTimeout(write, 1000);
+    setTimeout(write, 2000);
   } else {
     writing = true;
     // Simulate writing process

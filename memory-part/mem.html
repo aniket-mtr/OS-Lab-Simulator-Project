@@ -76,7 +76,7 @@
               designated for a specific task or program. These partitions remain
               fixed and are allocated to programs prior to execution, remaining
               unchanged throughout runtime. Regardless of a program's size, it
-              is assigned a predetermined partition. MFT ensures program
+              is assigned a predetermined partition. This ensures program
               isolation within their designated partitions, enhancing program
               security. Additionally, it mitigates external fragmentation as
               partition sizes remain constant.
@@ -95,7 +95,7 @@
               programs or tasks.Upon the arrival of a new program,
               the operating system searches for an adequately sized partition to
               accommodate it. Once suitable partition is identified,the
-              program is loaded into it. MVT enables effective memory
+              program is loaded into it. This enables effective memory
               utilization by dynamically adjusting partition sizes to
               accommodate incoming programs' needs. However, this approach may
               result in external fragmentation, as free memory blocks might be

@@ -63,10 +63,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="pageReplacementAlgos.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+                        <a class="nav-link active" href="#">About</a>
                     </li>
                 </ul>
             </div>
@@ -154,13 +154,14 @@
         }
 
         var temp = new Array();
+        // temp array here acts like a queue
         for (let o = 0; o < numberOfFrames; o++) {
             temp[o] = -1;
         }
-
+        // Porcessing all the page requests
         for (let m = 0; m < numberOfPages; m++) {
             let s = 0, k = 0, p;
-
+            // Check if the page already exists
             for (let n = 0; n < numberOfFrames; n++) {
                 if (arr[m] == temp[n]) {
                     s++;
@@ -169,8 +170,10 @@
                 }
             }
             pageFaults++;
-
+            
             if ((pageFaults < numberOfFrames) && (s == 0)) {
+                // If there is a page miss and not all the slots are occupied
+                // find the first empty slot and add teh page
                 for (p = 0; p < numberOfFrames; p++) {
                     if (temp[p] == -1)
                         break;
@@ -178,9 +181,10 @@
                 temp[p] = arr[m];
             }
             else if (s == 0) {
+                // If all the slots are filled use FIFO technique
                 temp[(pageFaults - 1) % numberOfFrames] = arr[m];
             }
-
+            // Adding the result to the webpage
             row = table.insertRow((count) + 1);
             cell = row.insertCell((k++));
             cell.innerHTML = arr[m];

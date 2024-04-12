@@ -63,10 +63,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="pageReplacementAlgos.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+                        <a class="nav-link active" href="#">About</a>
                     </li>
                 </ul>
             </div>
@@ -90,8 +90,8 @@
                     class="btn btn-outline-success" value="VISUALIZE">
             </div>
             <div class="button">
-                <input id="reset-button" type="button" onclick="reset(); enableButton();"
-                    class="btn btn-outline-danger" value="RESET">
+                <input id="reset-button" type="button" onclick="reset(); enableButton();" class="btn btn-outline-danger"
+                    value="RESET">
             </div>
         </div>
         <div class="second" id="SUM" style="display: none;">
@@ -153,20 +153,25 @@
             }
         }
 
-        let frames = new Array(), temp = new Array(), flag1, flag2, flag3, i, j, t, pos, max, s;
+        let counter = 0, flag1, flag2, i, j, pos, s, k;
+        let frames = new Array();
+        let time = new Array();
 
-        for (i = 0; i < numberOfFrames; ++i)
+        for (i = 0; i < numberOfFrames; ++i) {
             frames[i] = -1;
+        }
 
         for (i = 0; i < numberOfPages; ++i) {
-            flag1 = flag2 = 0, s = 1, k = 0;
 
+            flag1 = flag2 = 0, s = 1, k = 0;
 
             for (j = 0; j < numberOfFrames; ++j) {
                 //Checking if incoming string is present in frame
                 if (frames[j] == arr[i]) {
-                    flag1 = flag2 = 1;
+                    counter++;
                     pageHits++;
+                    time[j] = counter;
+                    flag1 = flag2 = 1;
                     s = 0;
                     break;
                 }
@@ -177,8 +182,10 @@
                 for (j = 0; j < numberOfFrames; ++j) {
                     //Checking for empty frames
                     if (frames[j] == -1) {
+                        counter++;
                         pageFaults++;
                         frames[j] = arr[i];
+                        time[j] = counter;
                         flag2 = 1;
                         break;
                     }
@@ -187,45 +194,14 @@
 
             //If it is a Page miss and frames are full
             if (flag2 == 0) {
-                flag3 = 0;
-
-                for (j = 0; j < numberOfFrames; ++j) {
-                    temp[j] = -1;
-
-                    //Finding the page occuring in future matching with current frame
-                    for (t = i + 1; t < numberOfPages; ++t) {
-                        if (frames[j] == arr[t]) {
-                            temp[j] = t;
-                            break;
-                        }
-                    }
-                }
-
-                for (j = 0; j < numberOfFrames; ++j) {
-                    //If no such page is found
-                    if (temp[j] == -1) {
-                        pos = j;
-                        flag3 = 1;
-                        break;
-                    }
-                }
-
-                //Finding farthest occuring page 
-                if (flag3 == 0) {
-                    max = temp[0];
-                    pos = 0;
-
-                    for (j = 1; j < numberOfFrames; ++j) {
-                        if (temp[j] > max) {
-                            max = temp[j];
-                            pos = j;
-                        }
-                    }
-                }
-                frames[pos] = arr[i];
+                pos = findLRU(time, numberOfFrames);
+                counter++;
                 pageFaults++;
+                frames[pos] = arr[i];
+                time[pos] = counter;
             }
 
+            // Adding result to the webpage
             row = table.insertRow((count) + 1);
             cell = row.insertCell((k++));
             cell.innerHTML = arr[i];
@@ -251,6 +227,7 @@
                 cell.innerHTML = "Miss";
                 cell.style.backgroundColor = "rgb(255, 0, 0)";
             }
+
         }
         hitRate = (pageHits / numberOfPages) * 100;
         missRate = (pageFaults / numberOfPages) * 100;
@@ -259,6 +236,19 @@
         document.getElementById("page_hits").innerHTML = "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
         document.getElementById("miss_rate").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
         document.getElementById("hit_rate").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
+
+        // Function to find the least recently used page
+        function findLRU(time, n) {
+            let i, minimum = time[0], pos = 0;
+            // Making use of time to find the least recently used page
+            for (i = 1; i < n; ++i) {
+                if (time[i] < minimum) {
+                    minimum = time[i];
+                    pos = i;
+                }
+            }
+            return pos;
+        }
     }
     function reset() {
         location.reload();

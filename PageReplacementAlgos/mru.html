@@ -63,10 +63,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="pageReplacementAlgos.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+                        <a class="nav-link active" href="#">About</a>
                     </li>
                 </ul>
             </div>
@@ -201,6 +201,7 @@
                 time[pos] = counter;
             }
 
+            // Adding results to the webpage
             row = table.insertRow((count) + 1);
             cell = row.insertCell((k++));
             cell.innerHTML = arr[i];
@@ -235,10 +236,10 @@
         document.getElementById("page_hits").innerHTML = "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
         document.getElementById("miss_rate").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
         document.getElementById("hit_rate").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
-
+        // Fucntion to find the most recently used page
         function findMRU(time, n) {
             let i, maximum = time[0], pos = 0;
-
+            // Making use of time to find the most recently used page
             for (i = 1; i < n; ++i) {
                 if (time[i] > maximum) {
                     maximum = time[i];

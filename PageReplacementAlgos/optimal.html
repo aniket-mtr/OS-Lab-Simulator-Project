@@ -63,10 +63,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="pageReplacementAlgos.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+                        <a class="nav-link active" href="#">About</a>
                     </li>
                 </ul>
             </div>
@@ -226,6 +226,7 @@
                 pageFaults++;
             }
 
+            // Adding result to the webpage
             row = table.insertRow((count) + 1);
             cell = row.insertCell((k++));
             cell.innerHTML = arr[i];

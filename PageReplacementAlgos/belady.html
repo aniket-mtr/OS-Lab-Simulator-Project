@@ -48,6 +48,10 @@
         #inputForm {
             margin-bottom: 50px;
         }
+        #info-text {
+            width: 700px;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -74,7 +78,8 @@
     </nav>
 
     <div class="container">
-        <h1 class="text-center mb-5">FIFO Page Replacement Algorithm</h1>
+        <h1 class="text-center mb-5">Belady's Anamoly</h1>
+        <h5>Demonstration using FIFO Algorithm</h5>
         <div id="inputForm" style="text-align: center;">
             <div class="form-group mt-4">
                 <label for="input_string">Enter stream of pages:</label>
@@ -86,7 +91,7 @@
                     required />
             </div>
             <div class="button">
-                <input id="visualize-button" type="button" onclick="showDiv(); visualize(); disableButton();"
+                <input id="visualize-button" type="button" onclick="showDiv(); visualize(); showDiv2(); visualize2(); disableButton();"
                     class="btn btn-outline-success" value="VISUALIZE">
             </div>
             <div class="button">
@@ -112,6 +117,45 @@
                 <p id="miss_rate"></p>
                 <p id="hit_rate"></p>
             </div>
+        </div>
+        <div class="second2" id="SUM2" style="display: none;">
+            <div class="heading">
+                <h1 class="text-center mb-5">Visualization with more frames</h1>
+            </div>
+            <div class="data">
+                <table id="tbl2" class="table table-bordered">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary card border border-dark align-items-center m-4">
+                <p id="page_miss2"></p>
+                <p id="page_hits2"></p>
+                <p id="miss_rate2"></p>
+                <p id="hit_rate2"></p>
+            </div>
+        </div>
+        <div id="info" style="display: none;">
+            <p id="info-text">
+                This phenomenon is commonly experienced in the following page replacement algorithms
+            </p>
+            <ul>
+                <li>FIFO</li>
+                <li>Second Chance Algorithm</li>
+                <li>Random Page Replacement Algorithm</li>
+            </ul>
+            <p id="info-text">
+                The other two commonly used page replacement algorithms are Optimal and LRU, 
+                but Belady's Anomaly can never occur in these algorithms for any reference 
+                string as they belong to a class of stack-based page replacement algorithms. 
+            </p>
+            <p id="info-text">
+                A <b>stack-based</b> algorithm is one for which it can be shown that the set of pages 
+                in memory for N frames is always a subset of the set of pages that would be in 
+                memory with N + 1 frames.
+            </p>
         </div>
     </div>
 </body>
@@ -222,6 +266,113 @@
         document.getElementById("miss_rate").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
         document.getElementById("hit_rate").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
     }
+    function visualize2() {
+        var numberOfFrames, dropDown, inputString, numberOfPages, pageFaults = 0, pageHits = 0, count = 0, missRate, hitRate;
+        var arr = new Array();
+        inputString = document.getElementById("input_string").value;
+        if (inputString == "") {
+            alert("Please Enter all fields");
+            reset();
+        }
+        arr = inputString.split(' ').map(Number);
+        numberOfPages = arr.length;
+        numberOfFrames = parseInt(document.getElementById("frame_size").value);
+        numberOfFrames++;
+        if (isNaN(numberOfFrames)) {
+            alert("Please Enter all fields");
+            reset();
+        }
+
+        if (numberOfFrames == 0) {
+            alert("Please choose Number Of Frames greater than 1");
+            reset();
+        }
+
+        var table = document.getElementById("tbl2");
+        var row = table.insertRow(0);
+        for (let j = 0; j <= (numberOfFrames + 1); j++) {
+            var cell = row.insertCell(j);
+
+            if (j == 0) {
+                cell.innerHTML = "<b>Page Sequence</b>";
+            }
+            else if (j == (numberOfFrames + 1)) {
+                cell.innerHTML = "<b>Page Hit/Miss</b>";
+            }
+            else {
+                cell.innerHTML = `<b>Frame ${j}</b>`;
+            }
+        }
+        console.log(123);
+        var temp = new Array();
+        // temp array here acts like a queue
+        for (let o = 0; o < numberOfFrames; o++) {
+            temp[o] = -1;
+        }
+        // Porcessing all the page requests
+        for (let m = 0; m < numberOfPages; m++) {
+            let s = 0, k = 0, p;
+            // Check if the page already exists
+            for (let n = 0; n < numberOfFrames; n++) {
+                if (arr[m] == temp[n]) {
+                    s++;
+                    pageHits++;
+                    pageFaults--;
+                }
+            }
+            pageFaults++;
+            
+            if ((pageFaults < numberOfFrames) && (s == 0)) {
+                // If there is a page miss and not all the slots are occupied
+                // find the first empty slot and add teh page
+                for (p = 0; p < numberOfFrames; p++) {
+                    if (temp[p] == -1)
+                        break;
+                }
+                temp[p] = arr[m];
+            }
+            else if (s == 0) {
+                // If all the slots are filled use FIFO technique
+                temp[(pageFaults - 1) % numberOfFrames] = arr[m];
+            }
+            // Adding the result to the webpage
+            row = table.insertRow((count) + 1);
+            cell = row.insertCell((k++));
+            cell.innerHTML = arr[m];
+            count++;
+
+            for (let n = 0; n < numberOfFrames; n++) {
+                if (temp[n] != -1) {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = temp[n];
+                }
+                else {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = " - ";
+                }
+
+            }
+            if (s == 0) {
+                cell = row.insertCell((k++));
+                cell.innerHTML = "Miss";
+                cell.style.backgroundColor = "rgb(255, 0, 0)";
+            }
+            else {
+                cell = row.insertCell((k++));
+                cell.innerHTML = "Hit";
+                cell.style.backgroundColor = "rgb(0, 255, 0)";
+            }
+
+        }
+
+        hitRate = (pageHits / numberOfPages) * 100;
+        missRate = (pageFaults / numberOfPages) * 100;
+
+        document.getElementById("page_miss2").innerHTML = "Total Number Of Page Faults : " + `<b>${pageFaults}</b>`;
+        document.getElementById("page_hits2").innerHTML = "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
+        document.getElementById("miss_rate2").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
+        document.getElementById("hit_rate2").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
+    }
     function reset() {
         location.reload();
     }
@@ -234,8 +385,9 @@
     function showDiv() {
         document.getElementById('SUM').style.display = "block";
     }
-    function redirect() {
-        window.location.href = "page_replacement_comparison.html";
+    function showDiv2() {
+        document.getElementById('SUM2').style.display = "block";
+        document.getElementById('info').style.display = "block";
     }
 </script>
 

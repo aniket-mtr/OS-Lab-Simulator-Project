@@ -52,10 +52,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto me-4">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+              <a class="nav-link active" href="#">About</a>
             </li>
           </ul>
         </div>
@@ -146,6 +146,25 @@
                 real-world memory management, where efficiency is crucial. 
               </p>
               <a href="./mru.html" class="btn btn-primary">Simulate MRU</a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="simulator-box">
+              <h2 class="simulator-title">
+                Belady's Anomaly
+              </h2>
+              <p class="simulator-description">
+                Belady's anomaly is a surprising phenomenon in computer memory management. 
+                It occurs when using certain page replacement algorithms, like First-In-First-Out 
+                (FIFO). In these algorithms, increasing the amount of available memory in main 
+                memory (adding more page frames) can actually lead to more page faults, not less. 
+                This is counterintuitive because more memory should allow the system to hold onto 
+                frequently used pages, reducing the need to fetch them from slower storage. 
+                Belady's anomaly highlights the importance of choosing the right page 
+                replacement algorithm, as some perform better than others under different 
+                memory access patterns.  
+              </p>
+              <a href="./belady.html" class="btn btn-primary">Simulate Belady's Anomaly</a>
             </div>
           </div>
       </div>

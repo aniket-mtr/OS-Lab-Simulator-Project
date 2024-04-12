@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Allocation Simulators</title>
+
+  <!-- 
+      * Boostrap CSS library : https://getbootstrap.com/
+      * Visit here to learn how to import : https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+     -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .container {
+      margin-top: 50px;
+    }
+
+    .simulator-box {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .simulator-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .simulator-description {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><strong>OS Simulator</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" onclick="location.href = '../about/about.html';" href="#">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="text-center mb-5">Process synchronisation</h1>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="simulator-box">
+          <h2 class="simulator-title">
+            Producer Consumer simulation
+          </h2>
+          
+          <div class="simulator-box">
+          <h2 class="simulator-title">
+            Producer 
+          </h2>
+          <button class="btn btn-primary" onclick="produce()">Produce</button>
+          <h2 class="simulator-title">
+            Consumer 
+          </h2>
+          
+          <button class="btn btn-primary" onclick="consume()">Consume</button>
+          </div>
+          <div class="simulator-box">
+            <h2 class="simulator-title">Buffer</h2>
+            <div id="buffer-content"></div>
+          </div>
+          <div id="warning-container"></div>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Buffer to store items
+const buffer = [];
+
+// Maximum buffer size
+const bufferSize = 10;
+
+// Function to produce item
+const fruits = ["Clothes", "Accesories", "Electronics", "Kitchen", "Misc"];s
+const fruitBasket = document.getElementById("fruit-basket");
+
+function produce() {
+  if (buffer.length < bufferSize) {
+    const randomIndex = Math.floor(Math.random() * fruits.length);
+    const fruit = fruits[randomIndex];
+    buffer.push(fruit);
+    updateBufferDisplay();
+    displayFruit(fruit);
+  } else {
+    console.log("Buffer is full. Cannot produce item.");
+    displayWarning("Buffer is full. Cannot produce item.");
+  }
+}
+
+function consume() {
+  if (buffer.length > 0) {
+    const consumedFruit = buffer.shift();
+    updateBufferDisplay();
+    removeFruit(consumedFruit);
+  } else {
+    console.log("Buffer is empty. Cannot consume item.");
+    displayWarning("Buffer is empty. Cannot consume item.");
+  }
+}
+
+function updateBufferDisplay() {
+  const bufferContent = document.getElementById("buffer-content");
+  bufferContent.textContent = buffer.join(", ");
+}
+
+function displayFruit(fruit) {
+  const fruitImage = new Image();
+  const imageFormats = ["jpg", "jpeg"]; // Array of image formats
+  let fruitImagePath = ""; // Variable to store the image path
+  
+  fruitImage.onload = function() {
+    fruitImage.classList.add("fruit-image");
+    fruitBasket.appendChild(fruitImage);
+  };
+
+  fruitImage.onerror = function() {
+    console.log(`Image not found for ${fruit}`);
+  };
+
+  for (let i = 0; i < imageFormats.length; i++) {
+    const imageFormat = imageFormats[i];
+    const imagePath = `${fruit}.${imageFormat}`;
+    fruitImage.src = imagePath;
+    fruitImagePath = imagePath;
+
+    if (fruitImage.complete) {
+      break;
+    }
+  }
+
+  if (fruitImagePath === "") {
+    console.log(`Image not found for ${fruit}`);
+  }
+}
+
+function removeFruit(fruit) {
+  const fruitImages = fruitBasket.getElementsByClassName("fruit-image");
+  for (let i = 0; i < fruitImages.length; i++) {
+    if (fruitImages[i].src.endsWith(`${fruit}.jpg`) || fruitImages[i].src.endsWith(`${fruit}.jpeg`)) {
+      fruitBasket.removeChild(fruitImages[i]);
+      break;
+    }
+  }
+}
+function displayWarning(message) {
+  const warningContainer = document.getElementById("warning-container");
+  const warningMessage = document.createElement("div");
+  warningMessage.classList.add("warning-message");
+  warningMessage.textContent = message;
+  warningContainer.appendChild(warningMessage);
+
+  setTimeout(function() {
+    warningContainer.removeChild(warningMessage);
+  }, 2000);
+}
+  </script>
+</body>
+</html>
